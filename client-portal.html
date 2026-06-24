@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Silverback Client Portal</title>
+    <meta name="description" content="Secure Silverback Consulting client portal for project progress, messages, documents, signatures, invoices, and payments.">
+    <meta name="theme-color" content="#9ea0a2">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap"
+      rel="stylesheet"
+    >
+    <link rel="stylesheet" href="portal.css?v=bank-portal-2">
+  </head>
+  <body>
+    <section class="portal-login" data-login-screen>
+      <form class="login-card" data-login-form>
+        <a class="portal-brand" href="index.html" aria-label="Silverback Consulting home">
+          <span>S</span>
+          <strong>Silverback</strong>
+          <small>Client Portal</small>
+        </a>
+        <p>Secure Client Access</p>
+        <h1>View progress, messages, documents, and invoices.</h1>
+        <label>
+          Client
+          <select name="clientName" data-client-select></select>
+        </label>
+        <label>
+          Access Code
+          <input type="password" name="accessCode" placeholder="Enter client access code" required>
+        </label>
+        <label class="check-row">
+          <input type="checkbox" name="mfa" required>
+          Verify this trusted demo device
+        </label>
+        <button type="submit">Enter Portal</button>
+        <span data-login-error></span>
+        <small>Demo access code: CLIENT2026. Production should use Azure AD B2C, MFA, encrypted storage, audit logs, and role-based access.</small>
+      </form>
+    </section>
+
+    <div class="portal-shell" data-portal-shell hidden>
+      <aside class="portal-sidebar">
+        <a class="portal-logo" href="index.html">
+          <span>S</span>
+          <strong>Silverback Portal</strong>
+        </a>
+        <nav>
+          <a class="active" href="#overview" data-portal-link="overview">Home</a>
+          <a href="#process" data-portal-link="process">Process</a>
+          <a href="#messages" data-portal-link="messages">Messages</a>
+          <a href="#documents" data-portal-link="documents">Documents</a>
+          <a href="#billing" data-portal-link="billing">Billing</a>
+          <a href="#statements" data-portal-link="statements">Statements</a>
+          <a href="#security" data-portal-link="security">Security</a>
+        </nav>
+        <button type="button" data-lock-portal>Lock Portal</button>
+      </aside>
+
+      <main class="portal-main">
+        <header class="portal-topbar">
+          <div>
+            <p>Client Workspace</p>
+            <h1 data-client-heading>Client Portal</h1>
+          </div>
+          <div class="portal-actions">
+            <span data-session-status>Protected session</span>
+            <a href="crm.html">Silverback HQ</a>
+            <a href="index.html">Public Site</a>
+            <a href="privacy.html">Privacy</a>
+            <a href="terms.html">Terms</a>
+          </div>
+        </header>
+
+        <section class="portal-view active" id="overview" data-portal-view="overview">
+          <div class="portal-account-bar">
+            <article>
+              <span>Secure Messages</span>
+              <strong>Open</strong>
+            </article>
+            <article>
+              <span>Documents</span>
+              <strong data-home-document-count>0 Pending</strong>
+            </article>
+            <article>
+              <span>Balance</span>
+              <strong data-home-balance>$0 Due</strong>
+            </article>
+            <article>
+              <span>Portal Status</span>
+              <strong>Protected</strong>
+            </article>
+          </div>
+          <div class="client-home-hero">
+            <div>
+              <p>Client Portal Home</p>
+              <h2 data-home-welcome>Welcome back.</h2>
+              <span data-home-summary>Your Silverback workspace is ready.</span>
+            </div>
+            <div class="home-status-card">
+              <span>Next Action</span>
+              <strong data-home-next-action>Review roadmap</strong>
+              <button type="button" data-portal-jump="messages">Ask Silverback A Question</button>
+            </div>
+          </div>
+          <div class="summary-grid">
+            <article>
+              <span>Current Phase</span>
+              <strong data-current-phase>Foundation</strong>
+            </article>
+            <article>
+              <span>Status</span>
+              <strong data-client-status>Active</strong>
+            </article>
+            <article>
+              <span>Next Action</span>
+              <strong data-next-action>Review roadmap</strong>
+            </article>
+            <article>
+              <span>Open Items</span>
+              <strong data-open-items>0</strong>
+            </article>
+          </div>
+          <div class="home-detail-grid">
+            <article>
+              <span>Current Project</span>
+              <strong data-home-project>Initial assessment</strong>
+            </article>
+            <article>
+              <span>Priority Focus</span>
+              <strong data-home-problem>Not yet documented</strong>
+            </article>
+            <article>
+              <span>Last Contact</span>
+              <strong data-home-last-contact>No date recorded</strong>
+            </article>
+          </div>
+          <div class="portal-command-grid">
+            <button type="button" data-portal-jump="messages">Send Message</button>
+            <button type="button" data-portal-jump="documents">Review Documents</button>
+            <button type="button" data-portal-jump="billing">Make Payment</button>
+            <button type="button" data-portal-jump="process">View Process</button>
+          </div>
+        </section>
+
+        <section class="portal-panel process-panel portal-view" id="process" data-portal-view="process" hidden>
+          <div class="section-title">
+            <p>Client Progress</p>
+            <h2>Where You Are In The Process</h2>
+          </div>
+          <div class="process-track" data-process-track></div>
+          <div class="client-brief">
+            <article>
+              <span>Biggest Problem</span>
+              <p data-biggest-problem></p>
+            </article>
+            <article>
+              <span>Current Project</span>
+              <p data-current-project></p>
+            </article>
+            <article>
+              <span>Last Contact</span>
+              <p data-last-contact></p>
+            </article>
+          </div>
+        </section>
+
+        <section class="portal-panel portal-view" id="messages" data-portal-view="messages" hidden>
+          <div class="section-title">
+            <p>Direct Communication</p>
+            <h2>Messages With Silverback</h2>
+          </div>
+          <div class="message-layout">
+            <div class="message-thread" data-message-thread></div>
+            <form class="message-form" data-message-form>
+              <label>
+                Message
+                <textarea name="message" rows="5" placeholder="Send a question, update, or document note to the Silverback team." required></textarea>
+              </label>
+              <button type="submit">Send Message</button>
+              <p data-message-status></p>
+            </form>
+          </div>
+        </section>
+
+        <section class="portal-panel portal-view" id="documents" data-portal-view="documents" hidden>
+          <div class="section-title">
+            <p>Documents & E-Signature</p>
+            <h2>Required Client Documents</h2>
+          </div>
+          <div class="integration-note">
+            <strong>Production integration:</strong> Connect DocuSign envelopes here for disclosures, agreements, engagement letters, and onboarding forms.
+          </div>
+          <div class="document-grid" data-document-grid></div>
+        </section>
+
+        <section class="portal-panel portal-view" id="billing" data-portal-view="billing" hidden>
+          <div class="section-title">
+            <p>Payments</p>
+            <h2>Invoices & Payment Methods</h2>
+          </div>
+          <div class="payment-layout">
+            <div class="invoice-list" data-invoice-list></div>
+            <form class="payment-card" data-payment-form>
+              <h3>Make A Payment</h3>
+              <label>Invoice<select name="invoice" data-invoice-select></select></label>
+              <label>Payment Method<select name="method"><option>Credit / Debit Card</option><option>Apple Pay</option><option>Google Pay</option><option>Venmo</option><option>PayPal</option><option>ACH Transfer</option><option>Plaid Bank Connection</option></select></label>
+              <div class="plaid-box">
+                <span data-plaid-status>Bank not connected</span>
+                <button type="button" data-connect-plaid>Connect Bank With Plaid</button>
+              </div>
+              <label>Amount<input type="number" name="amount" min="1" step="1" required></label>
+              <label class="check-row"><input type="checkbox" required> I authorize this demo payment request.</label>
+              <button type="submit">Submit Payment</button>
+              <p data-payment-status></p>
+            </form>
+          </div>
+          <div class="integration-note">
+            <strong>Production integration:</strong> Use Stripe Checkout or Stripe Payment Element for cards, Apple Pay, Google Pay, ACH, and wallets. Add PayPal/Venmo through PayPal Commerce Platform if required. Use Plaid Link for bank verification and complete Plaid token exchange only on the server.
+          </div>
+        </section>
+
+        <section class="portal-panel portal-view" id="statements" data-portal-view="statements" hidden>
+          <div class="section-title">
+            <p>Monthly Statements</p>
+            <h2>Statement & Invoice History</h2>
+          </div>
+          <div class="statement-grid" data-statement-grid></div>
+        </section>
+
+        <section class="portal-panel portal-view" id="security" data-portal-view="security" hidden>
+          <div class="section-title">
+            <p>Security Model</p>
+            <h2>Portal Security Measures</h2>
+          </div>
+          <div class="security-grid">
+            <article><h3>Identity</h3><p>Azure AD B2C login, MFA, password rules, and account recovery.</p></article>
+            <article><h3>Access Control</h3><p>Client-only data views, role-based permissions, session timeout, and device checks.</p></article>
+            <article><h3>Data Protection</h3><p>Encrypted database storage, HTTPS, secure file storage, and signed URL document access.</p></article>
+            <article><h3>Audit Trail</h3><p>Logins, messages, document signatures, Plaid bank connections, payments, invoice views, and CRM updates.</p></article>
+          </div>
+          <div class="audit-box">
+            <h3>Recent Portal Activity</h3>
+            <div data-audit-log></div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="portal.js?v=bank-portal-2"></script>
+  </body>
+</html>

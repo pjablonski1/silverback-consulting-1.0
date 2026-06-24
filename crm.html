@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Silverback HQ CRM</title>
+    <meta name="description" content="Silverback HQ operating CRM dashboard.">
+    <meta name="theme-color" content="#9ea0a2">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    >
+    <link rel="stylesheet" href="crm.css?v=crm-cleanup-1">
+  </head>
+  <body>
+    <section class="login-screen" data-login-screen>
+      <form class="login-card" data-login-form>
+        <div class="crm-brand" aria-label="Silverback Consulting LLC">
+          <span>S</span>
+          <strong>Silverback</strong>
+          <small>Consulting LLC</small>
+        </div>
+        <p>Secure Admin Access</p>
+        <h1>Silverback HQ</h1>
+        <label>
+          Access Code
+          <input type="password" name="accessCode" placeholder="Enter admin code" required>
+        </label>
+        <button type="submit">Enter CRM</button>
+        <span data-login-error></span>
+        <small>Presentation access code: SILVERBACK. Production deployment can connect to Azure authentication and role-based permissions.</small>
+      </form>
+    </section>
+
+    <div class="app-shell" data-app-shell hidden>
+      <aside class="sidebar">
+        <a class="sidebar-logo" href="index.html">
+          <span>S</span>
+          <strong>Silverback HQ</strong>
+        </a>
+        <nav>
+          <a href="#overview">Overview</a>
+          <a href="#pipeline">Pipeline</a>
+          <a href="#clients">Clients</a>
+          <a href="#contacts">Contacts</a>
+          <a href="#kpis">KPIs</a>
+          <a href="#tasks">Tasks</a>
+          <a href="#activity">Activity</a>
+          <a href="#assessment">Assessment</a>
+          <a href="#reports">Reports</a>
+          <a href="#sops">SOP Library</a>
+          <a href="#marketing">Marketing</a>
+          <a href="client-portal.html">Client Portal</a>
+        </nav>
+        <button type="button" data-lock-crm>Lock CRM</button>
+      </aside>
+
+      <main>
+        <header class="topbar">
+          <div>
+            <p>Operating CRM Dashboard</p>
+            <h1>Silverback HQ</h1>
+          </div>
+          <div class="topbar-actions">
+            <span class="security-pill" data-session-status>Protected session</span>
+            <input data-global-search placeholder="Search clients, contacts, tasks">
+            <a class="topbar-link" href="client-portal.html">Client Portal</a>
+            <a class="topbar-link" href="index.html">Public Website</a>
+            <a class="topbar-link" href="privacy.html">Privacy</a>
+            <a class="topbar-link" href="terms.html">Terms</a>
+            <button type="button" data-export-all>Export Data</button>
+          </div>
+        </header>
+
+        <section class="summary-grid" id="overview">
+          <article><span>Total Clients</span><strong data-total-clients>0</strong></article>
+          <article><span>Pipeline Value</span><strong data-pipeline-value>$0</strong></article>
+          <article><span>Open Tasks</span><strong data-open-tasks>0</strong></article>
+          <article><span>Follow-Ups Due</span><strong data-followups-due>0</strong></article>
+          <article><span>Active Clients</span><strong data-active-clients>0</strong></article>
+          <article><span>Lead Count</span><strong data-lead-count>0</strong></article>
+        </section>
+
+        <section class="dashboard-panel">
+          <div class="section-title">
+            <p>Daily Operating Page</p>
+            <h2>Today's CEO Dashboard</h2>
+          </div>
+          <div class="daily-grid">
+            <label>Today's Priorities<textarea data-daily="priorities" placeholder="1.&#10;2.&#10;3."></textarea></label>
+            <label>Clients To Check On<textarea data-daily="clients" placeholder="1.&#10;2.&#10;3."></textarea></label>
+            <label>Money Tasks<textarea data-daily="money" placeholder="1.&#10;2."></textarea></label>
+            <label>Content / Marketing<textarea data-daily="content" placeholder="1."></textarea></label>
+            <label>Done Today<textarea data-daily="done" placeholder="1.&#10;2.&#10;3."></textarea></label>
+          </div>
+        </section>
+
+        <section class="dashboard-panel" id="pipeline">
+          <div class="section-title">
+            <p>Sales Pipeline</p>
+            <h2>Opportunities</h2>
+          </div>
+          <form class="quick-form opportunity-form" data-opportunity-form>
+            <input name="name" placeholder="Opportunity name" required>
+            <select name="client" data-client-options-opportunities></select>
+            <select name="stage">
+              <option>New Lead</option>
+              <option>Discovery</option>
+              <option>Proposal</option>
+              <option>Negotiation</option>
+              <option>Won</option>
+              <option>Lost</option>
+            </select>
+            <input name="value" type="number" placeholder="Value">
+            <input name="closeDate" type="date">
+            <button type="submit">Add Opportunity</button>
+          </form>
+          <div class="pipeline-board" data-pipeline-board></div>
+        </section>
+
+        <section class="dashboard-panel" id="clients">
+          <div class="section-title">
+            <p>Client Database</p>
+            <h2>Clients</h2>
+          </div>
+          <form class="quick-form" data-client-form>
+            <input name="clientName" placeholder="Client name" required>
+            <select name="businessType">
+              <option>Consulting</option>
+              <option>Food Service</option>
+              <option>Service Business</option>
+              <option>Retail</option>
+              <option>Other</option>
+            </select>
+            <select name="currentPhase">
+              <option>Foundation</option>
+              <option>Financial Organization</option>
+              <option>Operations</option>
+              <option>Growth</option>
+              <option>Scale</option>
+            </select>
+            <select name="status">
+              <option>Lead</option>
+              <option>Active</option>
+              <option>Paused</option>
+              <option>Completed</option>
+            </select>
+            <input name="monthlyRevenue" type="number" placeholder="Monthly revenue">
+            <input name="monthlyProfit" type="number" placeholder="Monthly profit">
+            <input name="biggestProblem" placeholder="Biggest problem">
+            <input name="currentProject" placeholder="Current project">
+            <input name="nextAction" placeholder="Next action">
+            <input name="lastContact" type="date">
+            <input name="googleDriveLink" type="url" placeholder="Google Drive link">
+            <button type="submit">Add Client</button>
+          </form>
+          <div class="toolbar">
+            <input data-client-search placeholder="Search clients">
+            <select data-client-view>
+              <option value="all">All Clients</option>
+              <option value="active">Active Clients</option>
+              <option value="leads">Leads</option>
+              <option value="phase">By Phase</option>
+            </select>
+            <button type="button" data-export-clients>Export CSV</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Client Name</th>
+                  <th>Business Type</th>
+                  <th>Phase</th>
+                  <th>Status</th>
+                  <th>Revenue</th>
+                  <th>Profit</th>
+                  <th>Problem</th>
+                  <th>Project</th>
+                  <th>Next Action</th>
+                  <th>Last Contact</th>
+                  <th>Drive</th>
+                </tr>
+              </thead>
+              <tbody data-clients-table></tbody>
+            </table>
+          </div>
+          <div class="phase-board" data-phase-board hidden></div>
+        </section>
+
+        <section class="dashboard-panel" id="contacts">
+          <div class="section-title">
+            <p>Relationship Management</p>
+            <h2>Contacts</h2>
+          </div>
+          <form class="quick-form contacts-form" data-contact-crm-form>
+            <input name="name" placeholder="Contact name" required>
+            <select name="client" data-client-options-contacts></select>
+            <input name="role" placeholder="Role">
+            <input name="email" type="email" placeholder="Email">
+            <input name="phone" placeholder="Phone">
+            <select name="type">
+              <option>Decision Maker</option>
+              <option>Investor</option>
+              <option>Partner</option>
+              <option>Vendor</option>
+              <option>Team Member</option>
+            </select>
+            <button type="submit">Add Contact</button>
+          </form>
+          <div class="card-grid" data-contacts-grid></div>
+        </section>
+
+        <section class="dashboard-panel" id="kpis">
+          <div class="section-title">
+            <p>Performance Management</p>
+            <h2>KPI Tracker</h2>
+          </div>
+          <form class="quick-form kpi-form" data-kpi-form>
+            <select name="client" data-client-options-kpis></select>
+            <input name="metric" placeholder="KPI name" required>
+            <input name="target" placeholder="Target">
+            <input name="current" placeholder="Current result">
+            <select name="status">
+              <option>On Track</option>
+              <option>Watch</option>
+              <option>Off Track</option>
+            </select>
+            <input name="owner" placeholder="Owner">
+            <button type="submit">Add KPI</button>
+          </form>
+          <div class="kpi-grid" data-kpi-grid></div>
+        </section>
+
+        <section class="dashboard-panel" id="tasks">
+          <div class="section-title">
+            <p>Task Database</p>
+            <h2>Tasks & Follow-Ups</h2>
+          </div>
+          <form class="quick-form task-form" data-task-form>
+            <input name="task" placeholder="Task" required>
+            <select name="client" data-client-options></select>
+            <select name="priority"><option>High</option><option>Medium</option><option>Low</option></select>
+            <select name="status"><option>Not Started</option><option>In Progress</option><option>Waiting</option><option>Done</option></select>
+            <input name="dueDate" type="date">
+            <select name="category"><option>Legal</option><option>Financial</option><option>Operations</option><option>Marketing</option><option>Sales</option><option>Admin</option></select>
+            <input name="notes" placeholder="Notes">
+            <button type="submit">Add Task</button>
+          </form>
+          <div class="kanban" data-task-board></div>
+        </section>
+
+        <section class="dashboard-panel" id="activity">
+          <div class="section-title">
+            <p>Activity History</p>
+            <h2>Notes, Calls & Meetings</h2>
+          </div>
+          <form class="quick-form activity-form" data-activity-form>
+            <select name="client" data-client-options-activity></select>
+            <select name="type"><option>Call</option><option>Email</option><option>Meeting</option><option>Note</option><option>Follow-Up</option></select>
+            <input name="date" type="date" required>
+            <input name="summary" placeholder="Summary" required>
+            <input name="nextStep" placeholder="Next step">
+            <button type="submit">Log Activity</button>
+          </form>
+          <div class="timeline" data-activity-timeline></div>
+        </section>
+
+        <section class="dashboard-panel" id="assessment">
+          <div class="section-title">
+            <p>Business Assessment</p>
+            <h2>Client Assessment Template</h2>
+          </div>
+          <select data-assessment-client></select>
+          <textarea class="assessment-box" data-assessment-text></textarea>
+        </section>
+
+        <section class="dashboard-panel" id="reports">
+          <div class="section-title">
+            <p>Reports</p>
+            <h2>Performance Snapshot</h2>
+          </div>
+          <div class="reports-grid">
+            <article>
+              <h3>Clients by Status</h3>
+              <div data-status-report></div>
+            </article>
+            <article>
+              <h3>Pipeline by Stage</h3>
+              <div data-stage-report></div>
+            </article>
+            <article>
+              <h3>Tasks by Category</h3>
+              <div data-category-report></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="dashboard-panel" id="sops">
+          <div class="section-title">
+            <p>SOP Library</p>
+            <h2>Standard Operating Procedures</h2>
+          </div>
+          <div class="library-grid">
+            <article><h3>Foundation Checklist</h3><p>LLC, EIN, permits, licenses, business banking, launch checklist, and startup roadmap.</p></article>
+            <article><h3>Growth Roadmap</h3><p>Marketing, referrals, customer retention, pricing, revenue opportunities, and 30/60/90 day plan.</p></article>
+            <article><h3>Scale Operating Rhythm</h3><p>SOPs, workflows, accountability, KPIs, leadership meetings, and weekly execution review.</p></article>
+          </div>
+        </section>
+
+        <section class="dashboard-panel" id="marketing">
+          <div class="section-title">
+            <p>Content / Marketing</p>
+            <h2>Marketing Tracker</h2>
+          </div>
+          <div class="library-grid">
+            <article><h3>Foundation Tip</h3><p>Teach new owners one startup or organization step they should complete before scaling.</p></article>
+            <article><h3>Growth Insight</h3><p>Share a practical customer, marketing, pricing, or referral strategy for business owners.</p></article>
+            <article><h3>Scale Lesson</h3><p>Explain how systems, numbers, leadership, and accountability help owners regain control.</p></article>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div class="toast" data-toast hidden></div>
+
+    <script src="crm.js?v=crm-cleanup-1"></script>
+  </body>
+</html>
