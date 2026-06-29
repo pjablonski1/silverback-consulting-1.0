@@ -480,15 +480,43 @@ function resetIdleTimer() {
 if (isSessionValid()) unlock();
 else localStorage.removeItem(keys.unlocked);
 
+async function unlockIfAzureAuthenticated() {
+  if (!location.protocol.startsWith("http")) return;
+  try {
+    const response = await fetch("/.auth/me", { credentials: "same-origin", cache: "no-store" });
+    if (!response.ok) return;
+    const auth = await response.json();
+    const principal = auth.clientPrincipal;
+    if (!principal) return;
+    const roles = principal.userRoles || [];
+    const hasAdminRole = roles.includes("silverback_admin") || roles.includes("silverback_tech_admin");
+    if (!hasAdminRole && !roles.includes("authenticated")) return;
+    localStorage.setItem(keys.unlocked, String(Date.now() + sessionMinutes * 60000));
+    unlock();
+    if (sessionStatus) {
+      sessionStatus.textContent = `Azure protected session | ${principal.userDetails || "Signed in"}`;
+    }
+  } catch {
+    // Local preview cannot call Azure Static Web Apps auth endpoints.
+  }
+}
+
+function isAuthorizedLocalPreview(formData) {
+  const code = String(formData.get("accessCode") || "").trim().toUpperCase();
+  return code === "SILVERBACK";
+}
+
+unlockIfAzureAuthenticated();
+
 loginForm.addEventListener("submit", (event) => {
   event.preventDefault();
-  const code = new FormData(loginForm).get("accessCode");
-  if (String(code).trim().toUpperCase() === "SILVERBACK") {
+  const formData = new FormData(loginForm);
+  if (isAuthorizedLocalPreview(formData)) {
     localStorage.setItem(keys.unlocked, String(Date.now() + sessionMinutes * 60000));
     unlock();
     if (window.location.hash) requestAnimationFrame(() => scrollToCrmSection(window.location.hash, false));
   } else {
-    loginError.textContent = "Incorrect access code.";
+    loginError.textContent = "Incorrect local preview code.";
   }
 });
 

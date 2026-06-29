@@ -25,12 +25,12 @@
         <p>Secure Admin Access</p>
         <h1>Silverback HQ</h1>
         <label>
-          Access Code
-          <input type="password" name="accessCode" placeholder="Enter admin code" required>
+          Local Preview Code
+          <input type="password" name="accessCode" placeholder="Enter local preview code" autocomplete="current-password" required>
         </label>
         <button type="submit">Enter CRM</button>
         <span data-login-error></span>
-        <small>Local preview code only. In Azure, Silverback HQ is protected by Microsoft Entra ID before this page loads.</small>
+        <small>Live access is handled by Microsoft Entra ID and Azure Static Web Apps roles. This code is only for local preview.</small>
       </form>
     </section>
 

@@ -4,7 +4,8 @@
 
 - HTTPS through Azure Static Web Apps.
 - Security headers in `staticwebapp.config.json`.
-- Silverback HQ route protection for authenticated users.
+- Silverback HQ route protection for approved Azure roles only.
+- CRM JavaScript and CRM stylesheet are also protected so private CRM interface files are not publicly browsable.
 - No API keys or passwords committed to the project.
 - Email queue settings are environment-variable driven.
 - CRM launches with clean real-data mode.
@@ -43,7 +44,11 @@ Review activity logs for:
 ## Before Live Client Use
 
 - Confirm MFA works for Aida and Michael.
+- Confirm MFA works for `patinthecloud@yahoo.com`.
+- Confirm Aida and Michael have `silverback_admin`.
+- Confirm Patrick / Pat In The Cloud has `silverback_tech_admin`.
 - Confirm unauthorized users cannot open `crm.html`.
+- Confirm unauthorized users cannot open `crm.js` or `crm.css`.
 - Confirm app settings are present.
 - Confirm appointment queue sends to both owner emails.
 - Confirm backups are scheduled.

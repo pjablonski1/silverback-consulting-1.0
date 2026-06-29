@@ -36,7 +36,20 @@ At minimum for appointment notifications:
 
 ## 4. Authentication
 
-Use Microsoft Entra ID for owner access. Silverback HQ is already configured to require authenticated users in Azure.
+Use Microsoft Entra ID / Azure Static Web Apps role invitations for owner and technology administrator access.
+
+Silverback HQ is configured to require approved roles before the CRM loads:
+
+- `silverback_admin`
+- `silverback_tech_admin`
+
+Invite these accounts before the CRM is used with real data:
+
+- `aidamorales2014@gmail.com` as `silverback_admin`
+- `michaelcocom@yahoo.com` as `silverback_admin`
+- `patinthecloud@yahoo.com` as `silverback_tech_admin`
+
+The local preview code is only for local machine review. Do not use local preview access as the production security model.
 
 ## 5. First Verification
 
@@ -48,7 +61,9 @@ After deployment:
 4. Confirm Aida and Michael receive the notification.
 5. Open Silverback HQ.
 6. Confirm unauthenticated users are blocked.
-7. Confirm the CRM opens clean with no sample client records.
+7. Confirm non-invited users are blocked.
+8. Confirm Aida, Michael, and the tech administrator can open Silverback HQ.
+9. Confirm the CRM opens clean with no sample client records.
 
 ## 6. Custom Domain
 

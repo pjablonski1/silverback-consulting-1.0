@@ -3,7 +3,28 @@
     {
       "route": "/crm.html",
       "allowedRoles": [
-        "authenticated"
+        "silverback_admin",
+        "silverback_tech_admin"
+      ],
+      "headers": {
+        "Cache-Control": "no-store"
+      }
+    },
+    {
+      "route": "/crm.js",
+      "allowedRoles": [
+        "silverback_admin",
+        "silverback_tech_admin"
+      ],
+      "headers": {
+        "Cache-Control": "no-store"
+      }
+    },
+    {
+      "route": "/crm.css",
+      "allowedRoles": [
+        "silverback_admin",
+        "silverback_tech_admin"
       ],
       "headers": {
         "Cache-Control": "no-store"
@@ -29,6 +50,14 @@
     }
   ],
   "responseOverrides": {
+    "401": {
+      "redirect": "/.auth/login/aad?post_login_redirect_uri=/crm.html",
+      "statusCode": 302
+    },
+    "403": {
+      "rewrite": "/404.html",
+      "statusCode": 403
+    },
     "404": {
       "rewrite": "/404.html",
       "statusCode": 404

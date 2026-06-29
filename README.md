@@ -18,7 +18,12 @@ Static website and operating portal package for Silverback Consulting LLC.
 - Silverback HQ local preview: `SILVERBACK`
 - Client Portal local preview: `CLIENT2026`
 
-These are local preview codes only. In Azure, Silverback HQ is protected by Microsoft Entra ID through `staticwebapp.config.json`.
+These are local preview codes only. In Azure, Silverback HQ is protected by Microsoft Entra ID / Azure Static Web Apps role invitations through `staticwebapp.config.json`.
+
+Required Silverback HQ roles:
+
+- `silverback_admin` for Aida and Michael
+- `silverback_tech_admin` for Pat In The Cloud technical administration
 
 ## Local Preview
 
