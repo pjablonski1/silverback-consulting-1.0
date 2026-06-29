@@ -24,37 +24,15 @@ const crmKeys = {
   contacts: "silverbackContactsV2",
   opportunities: "silverbackOpportunitiesV2",
   tasks: "silverbackTasksV2",
-  activities: "silverbackActivitiesV2"
+  activities: "silverbackActivitiesV2",
+  notificationHistory: "silverbackNotificationHistoryV1"
 };
 
-const defaultCrmClients = [
-  { clientName: "Silverback Consulting", businessType: "Consulting", currentPhase: "Foundation", status: "Active", monthlyRevenue: 0, monthlyProfit: 0, biggestProblem: "CRM and operating systems", currentProject: "Website and HQ setup", nextAction: "Finalize CRM", lastContact: "", googleDriveLink: "", assessment: "" },
-  { clientName: "SB Plum Co", businessType: "Service Business", currentPhase: "Financial Organization", status: "Active", monthlyRevenue: 0, monthlyProfit: 0, biggestProblem: "Financial tracking", currentProject: "Bookkeeping setup", nextAction: "Collect bank statements", lastContact: "", googleDriveLink: "", assessment: "" },
-  { clientName: "Avy's Ribs", businessType: "Food Service", currentPhase: "Operations", status: "Lead", monthlyRevenue: 0, monthlyProfit: 0, biggestProblem: "Operations consistency", currentProject: "SOP review", nextAction: "Schedule assessment", lastContact: "", googleDriveLink: "", assessment: "" },
-  { clientName: "Felipe's Car Wash", businessType: "Service Business", currentPhase: "Growth", status: "Lead", monthlyRevenue: 0, monthlyProfit: 0, biggestProblem: "Lead flow", currentProject: "Marketing plan", nextAction: "Review pricing", lastContact: "", googleDriveLink: "", assessment: "" }
-];
-
-const defaultCrmTasks = [
-  { task: "File LLC organization checklist", client: "Silverback Consulting", priority: "High", status: "In Progress", dueDate: "", category: "Legal", notes: "" },
-  { task: "Set up operating dashboard", client: "Silverback Consulting", priority: "High", status: "In Progress", dueDate: "", category: "Operations", notes: "" },
-  { task: "Build client intake workflow", client: "Silverback Consulting", priority: "High", status: "Not Started", dueDate: "", category: "Sales", notes: "" },
-  { task: "Collect financial documents", client: "SB Plum Co", priority: "High", status: "Not Started", dueDate: "", category: "Financial", notes: "" },
-  { task: "Create P&L tracking sheet", client: "SB Plum Co", priority: "High", status: "Not Started", dueDate: "", category: "Financial", notes: "" }
-];
-
-const defaultCrmOpportunities = [
-  { name: "Silverback Launch Advisory", client: "Silverback Consulting", stage: "Proposal", value: 25000, closeDate: "" },
-  { name: "SB Plum Financial Cleanup", client: "SB Plum Co", stage: "Discovery", value: 12000, closeDate: "" }
-];
-
-const defaultCrmContacts = [
-  { name: "Aida Morales", client: "Silverback Consulting", role: "Founder & CEO", email: "", phone: "", type: "Decision Maker" },
-  { name: "Michael Cocom", client: "Silverback Consulting", role: "Co-Founder & Managing Partner", email: "", phone: "", type: "Decision Maker" }
-];
-
-const defaultCrmActivities = [
-  { client: "Silverback Consulting", type: "Meeting", date: today(), summary: "Reviewed HQ CRM requirements and website direction.", nextStep: "Confirm final CRM workflow." }
-];
+const defaultCrmClients = [];
+const defaultCrmTasks = [];
+const defaultCrmOpportunities = [];
+const defaultCrmContacts = [];
+const defaultCrmActivities = [];
 
 const defaultCrmData = {
   [crmKeys.clients]: defaultCrmClients,
@@ -69,14 +47,11 @@ if (scheduleDate) {
 }
 
 function readCrmList(key) {
-  if (!localStorage.getItem(key) && defaultCrmData[key]) {
-    writeCrmList(key, defaultCrmData[key]);
-  }
   try {
     return JSON.parse(localStorage.getItem(key)) || [];
   } catch {
-    writeCrmList(key, defaultCrmData[key] || []);
-    return defaultCrmData[key] || [];
+    writeCrmList(key, []);
+    return [];
   }
 }
 
@@ -94,11 +69,72 @@ function sendNotificationEmail(subject, lines) {
     "",
     ...lines,
     "",
-    "This notification was generated from the Silverback website demo.",
-    "Production version: send automatically through Azure, SendGrid, Microsoft Graph, or another secure email service."
+    "This notification was generated from the Silverback website.",
+    "Automated delivery is handled through the configured Azure notification service."
   ].join("\n");
   const mailto = `mailto:${notificationEmails.join(",")}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   window.location.href = mailto;
+}
+
+function appendNotificationHistory(records) {
+  const current = readCrmList(crmKeys.notificationHistory);
+  writeCrmList(crmKeys.notificationHistory, [...records, ...current].slice(0, 250));
+}
+
+function appointmentPayload(eventType, appointment) {
+  return {
+    eventId: `appt-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+    eventType,
+    appointmentId: appointment.appointmentId,
+    clientName: appointment.clientName,
+    contactName: appointment.name,
+    contactEmail: appointment.email,
+    contactPhone: appointment.phone,
+    date: appointment.date,
+    time: appointment.time,
+    notes: appointment.notes,
+    recipients: notificationEmails,
+    requestedAt: new Date().toISOString(),
+    source: "Silverback website consultation form"
+  };
+}
+
+function localNotificationRows(payload, status, detail = "") {
+  return payload.recipients.map((recipient) => ({
+    id: `${payload.eventId}-${recipient}-${payload.eventType}`,
+    eventId: payload.eventId,
+    eventType: payload.eventType,
+    recipient,
+    client: payload.clientName,
+    contact: payload.contactName,
+    appointmentId: payload.appointmentId,
+    appointmentDate: payload.date,
+    appointmentTime: payload.time,
+    status,
+    attempts: status === "Retry Scheduled" ? 1 : 0,
+    timestamp: new Date().toISOString(),
+    detail,
+    source: payload.source
+  }));
+}
+
+async function queueAppointmentNotification(eventType, appointment) {
+  const payload = appointmentPayload(eventType, appointment);
+  appendNotificationHistory(localNotificationRows(payload, "Queued", "Waiting for Azure email queue pickup."));
+  try {
+    const response = await fetch("/api/appointments/notify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    if (!response.ok) throw new Error(`Azure notification endpoint returned ${response.status}`);
+    appendNotificationHistory(localNotificationRows(payload, "Sent", "Accepted by Azure notification queue."));
+    return { queued: true, cloud: true };
+  } catch (error) {
+    appendNotificationHistory(localNotificationRows(payload, "Queued Locally", "Azure endpoint is not active in local preview; event stored for HQ visibility."));
+    console.info("Silverback notification queued locally:", error.message);
+    return { queued: true, cloud: false };
+  }
 }
 
 function ensureClient(clientName, details = {}) {
@@ -286,7 +322,7 @@ scheduleSection?.addEventListener("click", (event) => {
   }
 });
 
-scheduleForm?.addEventListener("submit", (event) => {
+scheduleForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
   const formData = new FormData(scheduleForm);
   const name = formData.get("scheduleName") || "there";
@@ -296,6 +332,7 @@ scheduleForm?.addEventListener("submit", (event) => {
   const phone = formData.get("schedulePhone") || "";
   const notes = formData.get("meetingNotes") || "";
   const clientName = `Consultation Lead - ${name}`;
+  const appointmentId = `appt-${Date.now()}`;
 
   ensureClient(clientName, {
     businessType: "Consultation Prospect",
@@ -321,16 +358,13 @@ scheduleForm?.addEventListener("submit", (event) => {
     notes: `Requested time: ${time}`
   });
 
-  sendNotificationEmail("New Consultation Appointment Request", [
-    `Name: ${name}`,
-    `Email: ${email}`,
-    `Phone: ${phone}`,
-    `Requested Date: ${date}`,
-    `Requested Time: ${time}`,
-    `Discussion Notes: ${notes || "Not provided"}`
-  ]);
+  const appointment = { appointmentId, clientName, name, email, phone, date, time, notes };
+  const bookingResult = await queueAppointmentNotification("appointment.booked", appointment);
+  await queueAppointmentNotification("appointment.reminder.scheduled", appointment);
 
-  scheduleStatus.textContent = `Thanks, ${name}. Your consultation request for ${date} at ${time} has been captured in Silverback HQ and an email notification has been prepared.`;
+  scheduleStatus.textContent = bookingResult.cloud
+    ? `Thanks, ${name}. Your consultation request for ${date} at ${time} has been captured and queued for Aida and Michael.`
+    : `Thanks, ${name}. Your consultation request for ${date} at ${time} has been captured. The Azure email queue is not active in local preview, so the event is stored in HQ notification history.`;
   scheduleForm.reset();
 });
 

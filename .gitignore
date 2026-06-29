@@ -9,6 +9,7 @@ Thumbs.db
 # Local environment files
 .env
 .env.*
+local.settings.json
 
 # Logs
 *.log
@@ -16,4 +17,3 @@ Thumbs.db
 # Archives and temp files
 *.zip
 *.tmp
-

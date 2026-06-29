@@ -34,11 +34,11 @@
         </label>
         <label class="check-row">
           <input type="checkbox" name="mfa" required>
-          Verify this trusted demo device
+          Verify this trusted device
         </label>
         <button type="submit">Enter Portal</button>
         <span data-login-error></span>
-        <small>Demo access code: CLIENT2026. Production should use Azure AD B2C, MFA, encrypted storage, audit logs, and role-based access.</small>
+        <small>Temporary access code: CLIENT2026. Production should use Azure AD B2C, MFA, encrypted storage, audit logs, and role-based access.</small>
       </form>
     </section>
 
@@ -51,6 +51,7 @@
         <nav>
           <a class="active" href="#overview" data-portal-link="overview">Home</a>
           <a href="#process" data-portal-link="process">Process</a>
+          <a href="#assessment" data-portal-link="assessment">Assessment</a>
           <a href="#messages" data-portal-link="messages">Messages</a>
           <a href="#documents" data-portal-link="documents">Documents</a>
           <a href="#billing" data-portal-link="billing">Billing</a>
@@ -138,8 +139,17 @@
               <strong data-home-last-contact>No date recorded</strong>
             </article>
           </div>
+          <div class="portal-onboarding-panel">
+            <div>
+              <span>Onboarding Completion</span>
+              <strong data-portal-onboarding-percent>0%</strong>
+              <div class="portal-progress"><i data-portal-onboarding-bar></i></div>
+            </div>
+            <p data-portal-onboarding-next>Review your next required action.</p>
+          </div>
           <div class="portal-command-grid">
             <button type="button" data-portal-jump="messages">Send Message</button>
+            <button type="button" data-portal-jump="assessment">Complete Assessment</button>
             <button type="button" data-portal-jump="documents">Review Documents</button>
             <button type="button" data-portal-jump="billing">Make Payment</button>
             <button type="button" data-portal-jump="process">View Process</button>
@@ -152,6 +162,7 @@
             <h2>Where You Are In The Process</h2>
           </div>
           <div class="process-track" data-process-track></div>
+          <div class="portal-checklist-grid" data-portal-onboarding-checklist></div>
           <div class="client-brief">
             <article>
               <span>Biggest Problem</span>
@@ -166,6 +177,37 @@
               <p data-last-contact></p>
             </article>
           </div>
+        </section>
+
+        <section class="portal-panel portal-view" id="assessment" data-portal-view="assessment" hidden>
+          <div class="section-title">
+            <p>Business Health Assessment</p>
+            <h2>Complete Your Silverback Readiness Review</h2>
+          </div>
+          <div class="portal-assessment-head">
+            <article>
+              <span>Completion</span>
+              <strong data-client-assessment-progress-text>0%</strong>
+              <div class="portal-progress"><i data-client-assessment-progress-bar></i></div>
+            </article>
+            <article>
+              <span>Status</span>
+              <strong data-client-assessment-status>Draft</strong>
+            </article>
+            <article>
+              <span>Last Saved</span>
+              <strong data-client-assessment-updated>Not saved</strong>
+            </article>
+          </div>
+          <p class="portal-assessment-error" data-client-assessment-error></p>
+          <form class="portal-assessment-form" data-client-assessment-form novalidate>
+            <div data-client-assessment-sections></div>
+            <div class="portal-assessment-actions">
+              <button type="button" data-client-assessment-save>Save Draft</button>
+              <button type="button" data-client-assessment-submit>Submit To Silverback</button>
+              <button type="button" data-client-assessment-export>Export Copy</button>
+            </div>
+          </form>
         </section>
 
         <section class="portal-panel portal-view" id="messages" data-portal-view="messages" hidden>
@@ -213,7 +255,7 @@
                 <button type="button" data-connect-plaid>Connect Bank With Plaid</button>
               </div>
               <label>Amount<input type="number" name="amount" min="1" step="1" required></label>
-              <label class="check-row"><input type="checkbox" required> I authorize this demo payment request.</label>
+              <label class="check-row"><input type="checkbox" required> I authorize this payment request.</label>
               <button type="submit">Submit Payment</button>
               <p data-payment-status></p>
             </form>

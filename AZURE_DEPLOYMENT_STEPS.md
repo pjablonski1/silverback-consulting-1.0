@@ -7,7 +7,7 @@
 5. Use these build settings:
 
    - App location: `/`
-   - API location: blank
+   - API location: `api`
    - Output location: blank
    - Build preset: Custom
 
@@ -16,15 +16,24 @@
 
    `AZURE_STATIC_WEB_APPS_API_TOKEN`
 
-8. After deployment, open the Azure URL and test:
+8. Add Azure Static Web App application settings for the email queue:
+
+   - `AzureWebJobsStorage`
+   - `SILVERBACK_NOTIFICATION_RECIPIENTS`
+   - `ACS_CONNECTION_STRING`
+   - `ACS_SENDER_ADDRESS`
+   - `EMAIL_QUEUE_NAME`
+   - `REMINDER_OFFSET_HOURS`
+
+9. After deployment, open the Azure URL and test:
 
    - Home page
    - Investor intake popup
    - Schedule consultation popup
+   - Appointment notification history in Silverback HQ
    - AI assistant
    - Silverback HQ
    - Client portal
    - Privacy and Terms pages
 
-9. Before real client use, connect real login, backend storage, email delivery, payment processing, and e-signature services.
-
+10. Before real client use, connect real login, backend storage, email delivery, payment processing, and e-signature services.

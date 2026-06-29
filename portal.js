@@ -9,15 +9,16 @@ const portalKeys = {
   portalPayments: "silverbackPortalPaymentsV1",
   portalPlaid: "silverbackPortalPlaidV1",
   portalAudit: "silverbackPortalAuditV1",
+  assessments: "silverbackBusinessHealthAssessmentsV1",
+  documentTemplates: "silverbackDocumentTemplatesV1",
+  signaturePackets: "silverbackSignaturePacketsV1",
+  onboardingConfig: "silverbackOnboardingConfigV1",
+  projects: "silverbackProjectsV1",
   unlocked: "silverbackClientPortalUnlocked",
   activeClient: "silverbackClientPortalActiveClient"
 };
 
-const fallbackClients = [
-  { clientName: "SB Plum Co", businessType: "Service Business", currentPhase: "Financial Organization", status: "Active", monthlyRevenue: 0, monthlyProfit: 0, biggestProblem: "Financial tracking", currentProject: "Bookkeeping setup", nextAction: "Collect bank statements", lastContact: "", googleDriveLink: "" },
-  { clientName: "Avy's Ribs", businessType: "Food Service", currentPhase: "Operations", status: "Lead", monthlyRevenue: 0, monthlyProfit: 0, biggestProblem: "Operations consistency", currentProject: "SOP review", nextAction: "Schedule assessment", lastContact: "", googleDriveLink: "" },
-  { clientName: "Felipe's Car Wash", businessType: "Service Business", currentPhase: "Growth", status: "Lead", monthlyRevenue: 0, monthlyProfit: 0, biggestProblem: "Lead flow", currentProject: "Marketing plan", nextAction: "Review pricing", lastContact: "", googleDriveLink: "" }
-];
+const fallbackClients = [];
 
 const processSteps = [
   { phase: "Foundation", detail: "Business setup, documents, licenses, bank setup, and launch checklist." },
@@ -27,18 +28,36 @@ const processSteps = [
   { phase: "Scale", detail: "Leadership, KPIs, hiring plan, expansion planning, and operating rhythm." }
 ];
 
-const starterDocuments = [
-  { id: "engagement", title: "Client Engagement Agreement", status: "Needs Signature", type: "Agreement", due: "Before onboarding" },
-  { id: "disclosure", title: "Consulting Disclosure", status: "Needs Signature", type: "Disclosure", due: "Before project start" },
-  { id: "scope", title: "Project Scope Confirmation", status: "Ready To Review", type: "Scope", due: "Before first strategy session" }
-];
+const starterDocuments = [];
 
-const starterInvoices = [
-  { id: "INV-1007", title: "Foundation & Business Assessment", amount: 1500, due: "2026-07-01", status: "Due" },
-  { id: "INV-1006", title: "Initial Strategy Consultation", amount: 350, due: "2026-06-15", status: "Paid" }
-];
+const starterInvoices = [];
 
 const notificationEmails = ["cocommichael@yahoo.com", "aidamorales2014@yahoo.com"];
+
+const clientAssessmentBlueprint = [
+  { id: "profile", title: "Company Profile", fields: [
+    { key: "companyName", label: "Company Name", type: "text", required: true },
+    { key: "industry", label: "Business Type", type: "select", required: true, options: ["Consulting", "Professional Services", "Food Service", "Retail", "Construction", "Healthcare", "Technology", "Transportation", "Other"] },
+    { key: "phase", label: "Current Phase", type: "select", required: true, options: ["Foundation", "Financial Organization", "Operations", "Growth", "Scale"] },
+    { key: "revenueRange", label: "Monthly Revenue Range", type: "select", required: true, options: ["Pre-revenue", "Under $10K", "$10K-$25K", "$25K-$75K", "$75K-$150K", "$150K+"] },
+    { key: "primaryGoal", label: "Main Goal", type: "textarea", required: true }
+  ] },
+  { id: "foundation", title: "Legal Foundation", fields: [
+    { key: "foundationItems", label: "Completed Foundation Items", type: "multiselect", options: ["LLC", "EIN", "Business License", "Seller's Permit", "Insurance", "Client Contracts", "Business Bank Account"] },
+    { key: "foundationRisk", label: "Foundation Risk", type: "radio", required: true, options: ["Low", "Moderate", "High"] },
+    { key: "foundationScore", label: "Foundation Score", type: "rating", required: true }
+  ] },
+  { id: "finance", title: "Financial Organization", fields: [
+    { key: "financeItems", label: "Financial Systems In Place", type: "multiselect", options: ["Bookkeeping", "QuickBooks", "Profit & Loss", "Balance Sheet", "Expense Tracking", "Profit Tracking", "Budget"] },
+    { key: "cashFlowClarity", label: "Cash Flow Clarity", type: "radio", required: true, options: ["Clear", "Somewhat Clear", "Unclear"] },
+    { key: "revenueGoal", label: "Revenue Goal", type: "text", required: true }
+  ] },
+  { id: "operations", title: "Operations & Growth", fields: [
+    { key: "operationsItems", label: "Operating Systems In Place", type: "multiselect", options: ["SOPs", "Employee Roles", "Training", "Daily Checklists", "Customer Service Process", "Task Management"] },
+    { key: "biggestBottleneck", label: "Biggest Bottleneck", type: "textarea", required: true },
+    { key: "next30Days", label: "Next 30-Day Plan", type: "textarea", required: true }
+  ] }
+];
 
 const loginScreen = document.querySelector("[data-login-screen]");
 const loginForm = document.querySelector("[data-login-form]");
@@ -60,6 +79,10 @@ const homeProblem = document.querySelector("[data-home-problem]");
 const homeLastContact = document.querySelector("[data-home-last-contact]");
 const homeDocumentCount = document.querySelector("[data-home-document-count]");
 const homeBalance = document.querySelector("[data-home-balance]");
+const portalOnboardingPercent = document.querySelector("[data-portal-onboarding-percent]");
+const portalOnboardingBar = document.querySelector("[data-portal-onboarding-bar]");
+const portalOnboardingNext = document.querySelector("[data-portal-onboarding-next]");
+const portalOnboardingChecklist = document.querySelector("[data-portal-onboarding-checklist]");
 const processTrack = document.querySelector("[data-process-track]");
 const biggestProblem = document.querySelector("[data-biggest-problem]");
 const currentProject = document.querySelector("[data-current-project]");
@@ -76,6 +99,16 @@ const plaidStatus = document.querySelector("[data-plaid-status]");
 const connectPlaid = document.querySelector("[data-connect-plaid]");
 const statementGrid = document.querySelector("[data-statement-grid]");
 const auditLog = document.querySelector("[data-audit-log]");
+const clientAssessmentForm = document.querySelector("[data-client-assessment-form]");
+const clientAssessmentSections = document.querySelector("[data-client-assessment-sections]");
+const clientAssessmentProgressText = document.querySelector("[data-client-assessment-progress-text]");
+const clientAssessmentProgressBar = document.querySelector("[data-client-assessment-progress-bar]");
+const clientAssessmentStatus = document.querySelector("[data-client-assessment-status]");
+const clientAssessmentUpdated = document.querySelector("[data-client-assessment-updated]");
+const clientAssessmentError = document.querySelector("[data-client-assessment-error]");
+const clientAssessmentSave = document.querySelector("[data-client-assessment-save]");
+const clientAssessmentSubmit = document.querySelector("[data-client-assessment-submit]");
+const clientAssessmentExport = document.querySelector("[data-client-assessment-export]");
 const portalLinks = document.querySelectorAll("[data-portal-link]");
 const portalViews = document.querySelectorAll("[data-portal-view]");
 const portalJumpButtons = document.querySelectorAll("[data-portal-jump]");
@@ -103,6 +136,38 @@ function currency(value) {
   return Number(value || 0).toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
 }
 
+function sharedTemplates() {
+  return read(portalKeys.documentTemplates, [
+    { id: "template-1", name: "Silverback Consulting Agreement", type: "Consulting Agreement" },
+    { id: "template-5", name: "Silverback NDA", type: "NDA" },
+    { id: "template-9", name: "Silverback Welcome Packet", type: "Welcome Packet" }
+  ]);
+}
+
+function sharedSignatures() {
+  return read(portalKeys.signaturePackets, []);
+}
+
+function writeSharedSignatures(value) {
+  write(portalKeys.signaturePackets, value);
+}
+
+function onboardingConfig() {
+  return read(portalKeys.onboardingConfig, {
+    requiredDocuments: ["Consulting Agreement", "NDA"],
+    requiredForms: ["Business Startup Intake", "Growth & Operations Intake"],
+    paymentRequiresSignedDocs: true
+  });
+}
+
+function sharedProjects() {
+  return read(portalKeys.projects, []);
+}
+
+function templateType(templateId) {
+  return sharedTemplates().find((template) => template.id === templateId)?.type || "Document";
+}
+
 function escapeHtml(value) {
   return String(value ?? "").replace(/[&<>"']/g, (char) => ({
     "&": "&amp;",
@@ -113,14 +178,155 @@ function escapeHtml(value) {
   }[char]));
 }
 
+function assessmentFields() {
+  return clientAssessmentBlueprint.flatMap((section) => section.fields);
+}
+
+function defaultClientAssessment(client) {
+  const responses = {};
+  assessmentFields().forEach((field) => {
+    responses[field.key] = field.type === "multiselect" ? [] : "";
+  });
+  responses.companyName = client.clientName || "";
+  responses.industry = client.businessType || "";
+  responses.phase = client.currentPhase || "Foundation";
+  responses.primaryGoal = client.nextAction || "";
+  responses.biggestBottleneck = client.biggestProblem || "";
+  return { status: "Draft", updatedAt: "", submittedAt: "", responses };
+}
+
+function allAssessments() {
+  return read(portalKeys.assessments, {});
+}
+
+function clientAssessment() {
+  const client = activeClient();
+  const assessments = allAssessments();
+  const existing = assessments[client.clientName];
+  const fallback = defaultClientAssessment(client);
+  const assessment = {
+    ...fallback,
+    ...(existing || {}),
+    responses: { ...fallback.responses, ...((existing && existing.responses) || {}) }
+  };
+  assessmentFields().forEach((field) => {
+    if (field.type === "multiselect" && !Array.isArray(assessment.responses[field.key])) assessment.responses[field.key] = [];
+  });
+  return assessment;
+}
+
+function saveClientAssessment(assessment) {
+  const client = activeClient();
+  const assessments = allAssessments();
+  assessments[client.clientName] = { ...assessment, updatedAt: new Date().toISOString() };
+  write(portalKeys.assessments, assessments);
+}
+
+function assessmentCompletion(assessment) {
+  const required = assessmentFields().filter((field) => field.required);
+  const done = required.filter((field) => {
+    const value = assessment.responses[field.key];
+    return Array.isArray(value) ? value.length > 0 : String(value || "").trim();
+  });
+  return {
+    percent: required.length ? Math.round((done.length / required.length) * 100) : 100,
+    missing: required.filter((field) => !done.includes(field))
+  };
+}
+
+function renderAssessmentInput(field, assessment) {
+  const value = assessment.responses[field.key];
+  const required = field.required ? " data-required=\"true\"" : "";
+  const requiredMark = field.required ? "<em>Required</em>" : "";
+  if (field.type === "textarea") return `<label class="portal-assessment-field portal-wide"${required}>${escapeHtml(field.label)} ${requiredMark}<textarea name="assessment.${escapeHtml(field.key)}" rows="3">${escapeHtml(value)}</textarea></label>`;
+  if (field.type === "select") return `<label class="portal-assessment-field"${required}>${escapeHtml(field.label)} ${requiredMark}<select name="assessment.${escapeHtml(field.key)}"><option value="">Select one</option>${field.options.map((option) => `<option${option === value ? " selected" : ""}>${escapeHtml(option)}</option>`).join("")}</select></label>`;
+  if (field.type === "radio") return `<fieldset class="portal-assessment-field"${required}><legend>${escapeHtml(field.label)} ${requiredMark}</legend><div class="portal-choice-row">${field.options.map((option) => `<label><input type="radio" name="assessment.${escapeHtml(field.key)}" value="${escapeHtml(option)}"${option === value ? " checked" : ""}>${escapeHtml(option)}</label>`).join("")}</div></fieldset>`;
+  if (field.type === "multiselect") {
+    const selected = Array.isArray(value) ? value : [];
+    return `<fieldset class="portal-assessment-field portal-wide"><legend>${escapeHtml(field.label)}</legend><div class="portal-checkbox-grid">${field.options.map((option) => `<label><input type="checkbox" name="assessment.${escapeHtml(field.key)}" value="${escapeHtml(option)}"${selected.includes(option) ? " checked" : ""}>${escapeHtml(option)}</label>`).join("")}</div></fieldset>`;
+  }
+  if (field.type === "rating") return `<fieldset class="portal-assessment-field"${required}><legend>${escapeHtml(field.label)} ${requiredMark}</legend><div class="portal-rating-row">${Array.from({ length: 10 }, (_, index) => index + 1).map((score) => `<label><input type="radio" name="assessment.${escapeHtml(field.key)}" value="${score}"${Number(value) === score ? " checked" : ""}>${score}</label>`).join("")}</div></fieldset>`;
+  return `<label class="portal-assessment-field"${required}>${escapeHtml(field.label)} ${requiredMark}<input name="assessment.${escapeHtml(field.key)}" value="${escapeHtml(value)}"></label>`;
+}
+
+function collectClientAssessment(base) {
+  const assessment = { ...base, responses: { ...base.responses } };
+  if (!clientAssessmentForm) return assessment;
+  assessmentFields().forEach((field) => {
+    const controls = [...clientAssessmentForm.querySelectorAll(`[name="assessment.${CSS.escape(field.key)}"]`)];
+    if (!controls.length) return;
+    if (field.type === "multiselect") {
+      assessment.responses[field.key] = controls.filter((control) => control.checked).map((control) => control.value);
+    } else if (field.type === "radio" || field.type === "rating") {
+      assessment.responses[field.key] = controls.find((control) => control.checked)?.value || "";
+    } else {
+      assessment.responses[field.key] = controls[0].value;
+    }
+  });
+  return assessment;
+}
+
+function refreshClientAssessmentSummary(assessment) {
+  const completion = assessmentCompletion(assessment);
+  if (clientAssessmentProgressText) clientAssessmentProgressText.textContent = `${completion.percent}%`;
+  if (clientAssessmentProgressBar) clientAssessmentProgressBar.style.width = `${completion.percent}%`;
+  if (clientAssessmentStatus) clientAssessmentStatus.textContent = assessment.status || "Draft";
+  if (clientAssessmentUpdated) clientAssessmentUpdated.textContent = assessment.updatedAt ? new Date(assessment.updatedAt).toLocaleString() : "Not saved";
+}
+
+function renderClientAssessment() {
+  if (!clientAssessmentSections) return;
+  const assessment = clientAssessment();
+  clientAssessmentSections.innerHTML = clientAssessmentBlueprint.map((section) => `
+    <article class="portal-assessment-card">
+      <h3>${escapeHtml(section.title)}</h3>
+      <div class="portal-assessment-grid">${section.fields.map((field) => renderAssessmentInput(field, assessment)).join("")}</div>
+    </article>
+  `).join("");
+  if (clientAssessmentError) clientAssessmentError.textContent = "";
+  refreshClientAssessmentSummary(assessment);
+}
+
+function savePortalAssessmentDraft(message = "Assessment draft saved.") {
+  const assessment = collectClientAssessment(clientAssessment());
+  assessment.status = "Draft";
+  saveClientAssessment(assessment);
+  logActivity(`${activeClientName} saved assessment draft.`);
+  refreshClientAssessmentSummary(clientAssessment());
+  if (clientAssessmentError) clientAssessmentError.textContent = message;
+}
+
+function submitPortalAssessment() {
+  const assessment = collectClientAssessment(clientAssessment());
+  const completion = assessmentCompletion(assessment);
+  if (completion.missing.length) {
+    clientAssessmentError.textContent = `Please complete: ${completion.missing.map((field) => field.label).join(", ")}.`;
+    clientAssessmentForm.querySelector(`[name="assessment.${CSS.escape(completion.missing[0].key)}"]`)?.focus();
+    return;
+  }
+  assessment.status = "Submitted";
+  assessment.submittedAt = new Date().toISOString();
+  saveClientAssessment(assessment);
+  logActivity(`${activeClientName} submitted business health assessment.`);
+  syncCrmActivity("Client submitted business health assessment.", "Advisor review required");
+  sendNotificationEmail("Silverback client assessment submitted", [`Client: ${activeClientName}`, "A business health assessment was submitted from the client portal."]);
+  refreshClientAssessmentSummary(clientAssessment());
+  clientAssessmentError.textContent = "Assessment submitted to Silverback.";
+}
+
+function exportPortalAssessment() {
+  savePortalAssessmentDraft("Assessment copy prepared.");
+  window.print();
+}
+
 function sendNotificationEmail(subject, lines) {
   const body = [
     "Silverback Client Portal Notification",
     "",
     ...lines,
     "",
-    "This notification was generated from the Silverback client portal demo.",
-    "Production version: send automatically through Azure, SendGrid, Microsoft Graph, DocuSign webhooks, Stripe webhooks, or PayPal webhooks."
+    "This notification was generated from the Silverback client portal.",
+    "Automated delivery is handled through the configured Azure notification service."
   ].join("\n");
   const mailto = `mailto:${notificationEmails.join(",")}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   window.location.href = mailto;
@@ -131,7 +337,16 @@ function clients() {
 }
 
 function clientData() {
-  return clients().find((client) => client.clientName === activeClientName) || clients()[0] || fallbackClients[0];
+  return clients().find((client) => client.clientName === activeClientName) || clients()[0] || {
+    clientName: "Client",
+    businessType: "",
+    currentPhase: "Foundation",
+    status: "Pending",
+    biggestProblem: "",
+    currentProject: "",
+    nextAction: "",
+    lastContact: ""
+  };
 }
 
 function clientKey(name = activeClientName) {
@@ -139,12 +354,13 @@ function clientKey(name = activeClientName) {
 }
 
 function scopedRecords(key, starter) {
-  const all = read(key, {});
+  const allData = read(key, {});
+  const all = Array.isArray(allData) || !allData || typeof allData !== "object" ? {} : allData;
   const scoped = all[clientKey()];
   if (scoped) return scoped;
-  all[clientKey()] = starter;
+  all[clientKey()] = [...starter];
   write(key, all);
-  return starter;
+  return [...starter];
 }
 
 function saveScopedRecords(key, records) {
@@ -154,10 +370,7 @@ function saveScopedRecords(key, records) {
 }
 
 function messages() {
-  return scopedRecords(portalKeys.portalMessages, [
-    { from: "Silverback Team", text: "Welcome to your client portal. You can send questions here, review next steps, sign documents, and view invoices.", date: today(), role: "team" },
-    { from: activeClientName, text: "Thank you. I will review the documents and next action plan.", date: today(), role: "client" }
-  ]);
+  return scopedRecords(portalKeys.portalMessages, []);
 }
 
 function documents() {
@@ -166,6 +379,35 @@ function documents() {
 
 function invoices() {
   return scopedRecords(portalKeys.portalInvoices, starterInvoices);
+}
+
+function signedSharedDocumentTypes() {
+  return sharedSignatures()
+    .filter((packet) => packet.client === activeClientName && ["Signed", "Completed"].includes(packet.status))
+    .map((packet) => templateType(packet.templateId));
+}
+
+function portalOnboardingStatus() {
+  const client = clientData();
+  const signedDocs = signedSharedDocumentTypes();
+  const localDocsSigned = documents().filter((doc) => doc.status === "Signed").length;
+  const assessment = clientAssessment();
+  const assessmentDone = ["Submitted", "Completed"].includes(assessment.status) || assessmentCompletion(assessment).percent >= 80;
+  const invoicePaid = invoices().some((invoice) => invoice.status === "Paid");
+  const hasProject = sharedProjects().some((project) => project.client === activeClientName);
+  const config = onboardingConfig();
+  const requiredDocsDone = config.requiredDocuments.every((doc) => signedDocs.includes(doc)) || localDocsSigned >= 2;
+  const checklist = [
+    { label: "Consultation Scheduled", complete: Boolean(client.nextAction || client.lastContact), next: "Confirm appointment with Silverback." },
+    { label: "Proposal Accepted", complete: ["Proposal Accepted", "Required Documents Sent", "Waiting for E-Signatures", "Payment Required", "Client Activated", "Project Created", "Project In Progress"].includes(client.lifecycleStage), next: "Review proposal with the team." },
+    { label: "Required Documents Signed", complete: requiredDocsDone, next: "Review and e-sign required documents." },
+    { label: "Business Health Assessment", complete: assessmentDone, next: "Complete the assessment form." },
+    { label: "Payment Received", complete: invoicePaid, next: requiredDocsDone ? "Submit payment." : "Payment unlocks after required signatures." },
+    { label: "Project Workspace Created", complete: hasProject, next: "Silverback will create your project workspace." }
+  ];
+  const complete = checklist.filter((item) => item.complete).length;
+  const percent = Math.round((complete / checklist.length) * 100);
+  return { checklist, percent, next: checklist.find((item) => !item.complete)?.next || "Onboarding complete. Continue project execution.", paymentUnlocked: !config.paymentRequiresSignedDocs || requiredDocsDone };
 }
 
 function plaidConnection() {
@@ -180,9 +422,7 @@ function savePlaidConnection(connection) {
 }
 
 function auditItems() {
-  return scopedRecords(portalKeys.portalAudit, [
-    { date: today(), text: "Client portal workspace opened for review." }
-  ]);
+  return scopedRecords(portalKeys.portalAudit, []);
 }
 
 function logActivity(text) {
@@ -205,7 +445,7 @@ function syncCrmActivity(summary, nextStep = "Review client portal update.") {
 }
 
 function populateClientSelect() {
-  clientSelect.innerHTML = clients().map((client) => `<option>${escapeHtml(client.clientName)}</option>`).join("");
+  clientSelect.innerHTML = clients().length ? clients().map((client) => `<option>${escapeHtml(client.clientName)}</option>`).join("") : `<option value="">No client profiles available</option>`;
   if (!activeClientName && clients()[0]) activeClientName = clients()[0].clientName;
   clientSelect.value = activeClientName;
 }
@@ -257,9 +497,13 @@ function renderOverview() {
   const unsigned = documents().filter((item) => item.status !== "Signed").length;
   const unpaid = invoices().filter((item) => item.status !== "Paid").length;
   const balance = invoices().filter((item) => item.status !== "Paid").reduce((sum, invoice) => sum + Number(invoice.amount || 0), 0);
+  const onboarding = portalOnboardingStatus();
   openItems.textContent = unsigned + unpaid;
   homeDocumentCount.textContent = `${unsigned} Pending`;
   homeBalance.textContent = `${currency(balance)} Due`;
+  if (portalOnboardingPercent) portalOnboardingPercent.textContent = `${onboarding.percent}%`;
+  if (portalOnboardingBar) portalOnboardingBar.style.width = `${onboarding.percent}%`;
+  if (portalOnboardingNext) portalOnboardingNext.textContent = onboarding.next;
 }
 
 function renderProcess() {
@@ -269,21 +513,32 @@ function renderProcess() {
     const className = index < activeIndex ? "complete" : index === activeIndex ? "active" : "";
     return `<article class="process-step ${className}"><h3>${step.phase}</h3><p>${step.detail}</p></article>`;
   }).join("");
+  if (portalOnboardingChecklist) {
+    portalOnboardingChecklist.innerHTML = portalOnboardingStatus().checklist.map((item) => `
+      <article class="${item.complete ? "complete" : ""}">
+        <strong>${item.complete ? "Complete" : "Open"}</strong>
+        <h3>${escapeHtml(item.label)}</h3>
+        <p>${escapeHtml(item.complete ? "Requirement satisfied." : item.next)}</p>
+      </article>
+    `).join("");
+  }
 }
 
 function renderMessages() {
-  messageThread.innerHTML = messages().map((message) => `
+  const items = messages();
+  messageThread.innerHTML = items.length ? items.map((message) => `
     <article class="message ${message.role === "client" ? "client" : "team"}">
       <strong>${escapeHtml(message.from)}</strong>
       <p>${escapeHtml(message.text)}</p>
       <small>${escapeHtml(message.date)}</small>
     </article>
-  `).join("");
+  `).join("") : `<p class="portal-empty">No messages yet.</p>`;
   messageThread.scrollTop = messageThread.scrollHeight;
 }
 
 function renderDocuments() {
-  documentGrid.innerHTML = documents().map((document) => `
+  const items = documents();
+  documentGrid.innerHTML = items.length ? items.map((document) => `
     <article class="document-card ${document.status === "Signed" ? "signed" : ""}">
       <span>${escapeHtml(document.type)}</span>
       <h3>${escapeHtml(document.title)}</h3>
@@ -291,12 +546,12 @@ function renderDocuments() {
       <p>Due: ${escapeHtml(document.due)}</p>
       <button type="button" data-sign-document="${document.id}">${document.status === "Signed" ? "View Signed Copy" : "Review & E-Sign"}</button>
     </article>
-  `).join("");
+  `).join("") : `<p class="portal-empty">No document records yet.</p>`;
 }
 
 function renderInvoices() {
   const items = invoices();
-  invoiceList.innerHTML = items.map((invoice) => `
+  invoiceList.innerHTML = items.length ? items.map((invoice) => `
     <article class="invoice-card ${invoice.status === "Paid" ? "paid" : "due"}">
       <span>${escapeHtml(invoice.id)}</span>
       <h3>${escapeHtml(invoice.title)}</h3>
@@ -304,12 +559,26 @@ function renderInvoices() {
       <p>Due: ${escapeHtml(invoice.due)}</p>
       <p>Status: ${escapeHtml(invoice.status)}</p>
     </article>
-  `).join("");
-  invoiceSelect.innerHTML = items.map((invoice) => `<option value="${escapeHtml(invoice.id)}">${escapeHtml(invoice.id)} - ${escapeHtml(invoice.title)} (${escapeHtml(invoice.status)})</option>`).join("");
+  `).join("") : `<p class="portal-empty">No invoices created yet.</p>`;
+  invoiceSelect.innerHTML = items.length ? items.map((invoice) => `<option value="${escapeHtml(invoice.id)}">${escapeHtml(invoice.id)} - ${escapeHtml(invoice.title)} (${escapeHtml(invoice.status)})</option>`).join("") : `<option value="">No invoices available</option>`;
   const firstDue = items.find((invoice) => invoice.status !== "Paid") || items[0];
   if (firstDue) {
     invoiceSelect.value = firstDue.id;
     paymentForm.amount.value = firstDue.amount;
+  } else {
+    paymentForm.amount.value = "";
+  }
+  const onboarding = portalOnboardingStatus();
+  [...paymentForm.elements].forEach((element) => {
+    if (element.matches("[data-connect-plaid]")) return;
+    if (element.name === "invoice" || element.name === "method" || element.name === "amount" || element.type === "checkbox" || element.type === "submit") {
+      element.disabled = !onboarding.paymentUnlocked;
+    }
+  });
+  if (!onboarding.paymentUnlocked) {
+    paymentStatus.textContent = "Payment is locked until required onboarding documents are signed.";
+  } else if (paymentStatus.textContent.includes("locked")) {
+    paymentStatus.textContent = "Payment is unlocked. Choose an invoice and method when ready.";
   }
 
   const plaid = plaidConnection();
@@ -327,18 +596,19 @@ function renderInvoices() {
 
 function renderStatements() {
   const items = invoices();
-  statementGrid.innerHTML = items.map((invoice) => `
+  statementGrid.innerHTML = items.length ? items.map((invoice) => `
     <article>
       <h3>${escapeHtml(invoice.id)}</h3>
       <p>${escapeHtml(invoice.title)}</p>
       <p>${currency(invoice.amount)} - ${escapeHtml(invoice.status)}</p>
       <p>Statement period: ${escapeHtml(invoice.due.slice(0, 7))}</p>
     </article>
-  `).join("");
+  `).join("") : `<p class="portal-empty">No statements available yet.</p>`;
 }
 
 function renderAudit() {
-  auditLog.innerHTML = auditItems().map((item) => `<div class="audit-item"><time>${escapeHtml(item.date)}</time><span>${escapeHtml(item.text)}</span></div>`).join("");
+  const items = auditItems();
+  auditLog.innerHTML = items.length ? items.map((item) => `<div class="audit-item"><time>${escapeHtml(item.date)}</time><span>${escapeHtml(item.text)}</span></div>`).join("") : `<p class="portal-empty">No portal activity yet.</p>`;
 }
 
 function showPortalView(viewName) {
@@ -358,6 +628,7 @@ function showPortalView(viewName) {
 function renderPortal() {
   renderOverview();
   renderProcess();
+  renderClientAssessment();
   renderMessages();
   renderDocuments();
   renderInvoices();
@@ -376,19 +647,37 @@ portalJumpButtons.forEach((button) => {
   button.addEventListener("click", () => showPortalView(button.dataset.portalJump));
 });
 
+clientAssessmentForm?.addEventListener("input", () => {
+  const assessment = collectClientAssessment(clientAssessment());
+  assessment.status = "Draft";
+  saveClientAssessment(assessment);
+  refreshClientAssessmentSummary(clientAssessment());
+});
+
+clientAssessmentForm?.addEventListener("change", () => {
+  const assessment = collectClientAssessment(clientAssessment());
+  assessment.status = "Draft";
+  saveClientAssessment(assessment);
+  refreshClientAssessmentSummary(clientAssessment());
+});
+
+clientAssessmentSave?.addEventListener("click", () => savePortalAssessmentDraft());
+clientAssessmentSubmit?.addEventListener("click", submitPortalAssessment);
+clientAssessmentExport?.addEventListener("click", exportPortalAssessment);
+
 loginForm.addEventListener("submit", (event) => {
   event.preventDefault();
   const formData = new FormData(loginForm);
   activeClientName = formData.get("clientName");
   const accessCode = String(formData.get("accessCode") || "").trim();
   if (accessCode !== "CLIENT2026") {
-    loginError.textContent = "Incorrect access code. Use CLIENT2026 for the demo portal.";
+    loginError.textContent = "Incorrect access code.";
     return;
   }
   loginError.textContent = "";
   unlockPortal();
   showPortalView("overview");
-  logActivity("Secure client login completed with demo MFA verification.");
+  logActivity("Secure client login completed with portal verification.");
 });
 
 lockButton.addEventListener("click", lockPortal);
@@ -422,6 +711,11 @@ documentGrid.addEventListener("click", (event) => {
   const button = event.target.closest("[data-sign-document]");
   if (!button) return;
   const documentId = button.dataset.signDocument;
+  const templateLookup = {
+    engagement: "Consulting Agreement",
+    disclosure: "Disclosure",
+    scope: "Statement of Work"
+  };
   const records = documents().map((document) => {
     if (document.id !== documentId) return document;
     if (document.status === "Signed") return document;
@@ -429,6 +723,34 @@ documentGrid.addEventListener("click", (event) => {
   });
   const signed = records.find((document) => document.id === documentId);
   saveScopedRecords(portalKeys.portalDocuments, records);
+  const templates = sharedTemplates();
+  const matchedTemplate = templates.find((template) => {
+    const normalizedName = String(template.name || "").toLowerCase();
+    const normalizedTitle = String(signed.title || "").toLowerCase();
+    const expected = String(templateLookup[documentId] || "").toLowerCase();
+    return normalizedName.includes(expected) || normalizedTitle.includes(normalizedName);
+  });
+  const packets = sharedSignatures();
+  const packetIndex = packets.findIndex((packet) => {
+    const sameClient = String(packet.client || "").toLowerCase() === activeClientName.toLowerCase();
+    const sameTemplate = matchedTemplate ? packet.templateId === matchedTemplate.id : packet.templateId === documentId;
+    return sameClient && sameTemplate;
+  });
+  const completedPacket = {
+    id: packetIndex >= 0 ? packets[packetIndex].id : `sig-${Date.now()}`,
+    client: activeClientName,
+    templateId: matchedTemplate ? matchedTemplate.id : documentId,
+    status: "Signed",
+    sentAt: packetIndex >= 0 ? packets[packetIndex].sentAt : today(),
+    signedAt: today(),
+    verification: "Portal e-signature verification captured"
+  };
+  if (packetIndex >= 0) {
+    packets[packetIndex] = { ...packets[packetIndex], ...completedPacket };
+  } else {
+    packets.unshift(completedPacket);
+  }
+  writeSharedSignatures(packets);
   syncCrmActivity(`Client signed document: ${signed.title}.`, "Review signed document packet.");
   logActivity(`DocuSign workflow completed for ${signed.title}.`);
   sendNotificationEmail("Client Document Signed", [
@@ -442,9 +764,9 @@ documentGrid.addEventListener("click", (event) => {
 });
 
 connectPlaid.addEventListener("click", () => {
-  const connection = { connected: true, bank: "Demo Business Checking ending in 2026", connectedDate: today() };
+  const connection = { connected: true, bank: "Connected business bank account", connectedDate: today() };
   savePlaidConnection(connection);
-  syncCrmActivity("Client connected bank account through Plaid demo workflow.", "Verify bank connection before ACH payment.");
+  syncCrmActivity("Client connected bank account through Plaid workflow.", "Verify bank connection before ACH payment.");
   logActivity("Plaid bank connection completed.");
   sendNotificationEmail("Client Connected Bank With Plaid", [
     `Client: ${activeClientName}`,
@@ -462,10 +784,21 @@ invoiceSelect.addEventListener("change", () => {
 
 paymentForm.addEventListener("submit", (event) => {
   event.preventDefault();
+  const onboarding = portalOnboardingStatus();
+  if (!onboarding.paymentUnlocked) {
+    paymentStatus.textContent = "Payment remains locked until required onboarding documents are signed.";
+    logActivity("Payment attempt blocked because onboarding requirements are incomplete.");
+    return;
+  }
   const formData = new FormData(paymentForm);
   const invoiceId = formData.get("invoice");
   const method = formData.get("method");
   const amount = Number(formData.get("amount"));
+  if (!invoiceId || !invoices().some((invoice) => invoice.id === invoiceId)) {
+    paymentStatus.textContent = "No invoice is available for payment yet.";
+    logActivity("Payment attempt blocked because no invoice is available.");
+    return;
+  }
   if (method === "Plaid Bank Connection" && !plaidConnection().connected) {
     paymentStatus.textContent = "Connect a bank with Plaid before submitting this payment method.";
     return;

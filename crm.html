@@ -12,7 +12,7 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     >
-    <link rel="stylesheet" href="crm.css?v=crm-cleanup-1">
+    <link rel="stylesheet" href="crm.css?v=crm-monster-ops-1">
   </head>
   <body>
     <section class="login-screen" data-login-screen>
@@ -42,11 +42,30 @@
         </a>
         <nav>
           <a href="#overview">Overview</a>
+          <a href="#intelligence">Intelligence</a>
+          <a href="#revenue-builder">Revenue Builder</a>
+          <a href="#client-journey">Client Journey</a>
+          <a href="#lifecycle-os">Lifecycle OS</a>
+          <a href="#intake-builder">Intake Builder</a>
+          <a href="#template-library">Templates</a>
+          <a href="#esignatures">E-Signatures</a>
+          <a href="#onboarding">Onboarding</a>
+          <a href="#projects">Projects</a>
+          <a href="#workbench">Workbench</a>
+          <a href="#automation">Automation</a>
+          <a href="#admin-config">Admin Config</a>
+          <a href="#security">Security</a>
+          <a href="#integrations">Integrations</a>
+          <a href="#production-stack">Production Stack</a>
+          <a href="#ceo-dashboard">CEO Dashboard</a>
           <a href="#pipeline">Pipeline</a>
           <a href="#clients">Clients</a>
           <a href="#contacts">Contacts</a>
           <a href="#kpis">KPIs</a>
           <a href="#tasks">Tasks</a>
+          <a href="#operating-plan">Operating Plan</a>
+          <a href="#accounting">Accounting</a>
+          <a href="#documents">Documents</a>
           <a href="#activity">Activity</a>
           <a href="#assessment">Assessment</a>
           <a href="#reports">Reports</a>
@@ -81,19 +100,419 @@
           <article><span>Follow-Ups Due</span><strong data-followups-due>0</strong></article>
           <article><span>Active Clients</span><strong data-active-clients>0</strong></article>
           <article><span>Lead Count</span><strong data-lead-count>0</strong></article>
+          <article><span>Overdue Work</span><strong data-overdue-tasks>0</strong></article>
+          <article><span>Clients At Risk</span><strong data-risk-clients>0</strong></article>
+          <article><span>Open Invoices</span><strong data-open-invoices>$0</strong></article>
+          <article><span>Security Score</span><strong data-security-score>0%</strong></article>
+          <article><span>Active Automations</span><strong data-active-automations>0</strong></article>
+          <article><span>Connected Systems</span><strong data-connected-systems>0</strong></article>
         </section>
 
-        <section class="dashboard-panel">
+        <section class="dashboard-panel intelligence-panel" id="intelligence">
+          <div class="section-title">
+            <p>CRM Intelligence Layer</p>
+            <h2>Salesforce Discipline. HubSpot Speed. Silverback Execution.</h2>
+          </div>
+          <div class="intelligence-grid">
+            <article>
+              <span>Weighted Forecast</span>
+              <strong data-weighted-forecast>$0</strong>
+              <p>Pipeline adjusted by deal stage probability.</p>
+            </article>
+            <article>
+              <span>Client Health</span>
+              <strong data-health-score>0%</strong>
+              <p>Active client stability based on tasks, KPIs, and contact rhythm.</p>
+            </article>
+            <article>
+              <span>Collection Risk</span>
+              <strong data-collection-risk>$0</strong>
+              <p>Invoices still open or overdue.</p>
+            </article>
+            <article>
+              <span>Next Best Actions</span>
+              <strong data-next-action-count>0</strong>
+              <p>Priority work, follow-ups, risk items, and revenue moves.</p>
+            </article>
+          </div>
+          <div class="automation-strip">
+            <article>
+              <h3>Sales Motion</h3>
+              <div data-sales-motion></div>
+            </article>
+            <article>
+              <h3>Client Success Motion</h3>
+              <div data-client-success-motion></div>
+            </article>
+            <article>
+              <h3>Accounting Motion</h3>
+              <div data-accounting-motion></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="dashboard-panel revenue-builder-panel" id="revenue-builder">
+          <div class="section-title">
+            <p>Revenue Builder</p>
+            <h2>Package, Quote, Pipeline & Invoice Creator</h2>
+          </div>
+          <div class="revenue-builder-layout">
+            <form class="quick-form revenue-builder-form" data-revenue-builder-form>
+              <select name="client" data-client-options-revenue required></select>
+              <select name="packageName" data-package-select required></select>
+              <select name="maintenanceName" data-maintenance-select></select>
+              <input name="estimatedValue" type="number" min="0" step="100" placeholder="Estimated project value">
+              <input name="upfrontPayment" type="number" min="0" step="100" placeholder="Upfront payment / deposit">
+              <select name="owner">
+                <option>Aida Morales</option>
+                <option>Michael Cocom</option>
+                <option>Silverback Team</option>
+              </select>
+              <input name="nextStep" placeholder="Next action for this deal">
+              <button type="submit">Create Revenue Plan</button>
+            </form>
+            <div class="revenue-preview-grid">
+              <article class="package-preview" data-package-preview></article>
+              <article class="revenue-playbook">
+                <h3>Best Next Revenue Moves</h3>
+                <div data-revenue-plays></div>
+              </article>
+            </div>
+          </div>
+          <div class="revenue-plan-list" data-revenue-builder-output></div>
+        </section>
+
+        <section class="dashboard-panel client-journey-panel" id="client-journey">
+          <div class="section-title">
+            <p>Client Journey Hub</p>
+            <h2>Track Every Client From Lead To Scale</h2>
+          </div>
+          <div class="journey-grid" data-client-journey-grid></div>
+        </section>
+
+        <section class="dashboard-panel enterprise-panel" id="lifecycle-os">
+          <div class="section-title">
+            <p>Client Lifecycle Operating System</p>
+            <h2>Configurable Stages From First Contact To Long-Term Client</h2>
+          </div>
+          <div class="enterprise-split">
+            <form class="quick-form compact-form" data-lifecycle-stage-form>
+              <input name="name" placeholder="New workflow stage" required>
+              <input name="owner" placeholder="Default owner">
+              <input name="requiredAction" placeholder="Required action before advancing">
+              <button type="submit">Add Stage</button>
+            </form>
+            <article class="enterprise-card">
+              <h3>Executive Lifecycle Filters</h3>
+              <div class="filter-row">
+                <label>Consultant<select data-executive-filter="consultant"><option>All</option><option>Aida Morales</option><option>Michael Cocom</option><option>Silverback Team</option></select></label>
+                <label>Service<select data-executive-filter="service"><option>All</option><option>Foundation</option><option>Growth</option><option>Scale</option></select></label>
+                <label>Date Range<select data-executive-filter="dateRange"><option>All Time</option><option>This Week</option><option>This Month</option><option>This Quarter</option></select></label>
+              </div>
+            </article>
+          </div>
+          <div class="executive-metric-grid" data-executive-lifecycle-metrics></div>
+          <div class="lifecycle-stage-grid" data-lifecycle-stage-grid></div>
+        </section>
+
+        <section class="dashboard-panel enterprise-panel" id="intake-builder">
+          <div class="section-title">
+            <p>Dynamic Client Intake Forms</p>
+            <h2>Build Service-Specific Questionnaires Without Code</h2>
+          </div>
+          <div class="enterprise-split">
+            <form class="quick-form compact-form" data-intake-form-builder>
+              <input name="name" placeholder="Form name" required>
+              <select name="service"><option>Foundation</option><option>Growth</option><option>Scale</option><option>Financial Organization</option><option>Operations</option></select>
+              <select name="required"><option value="true">Required</option><option value="false">Optional</option></select>
+              <button type="submit">Create Form</button>
+            </form>
+            <form class="quick-form compact-form" data-intake-field-builder>
+              <select name="formId" data-intake-form-options required></select>
+              <input name="label" placeholder="Question / field label" required>
+              <select name="type"><option>text</option><option>textarea</option><option>dropdown</option><option>checkboxes</option><option>file</option><option>date</option></select>
+              <input name="options" placeholder="Options, comma separated">
+              <button type="submit">Add Field</button>
+            </form>
+          </div>
+          <div class="intake-builder-grid" data-intake-builder-grid></div>
+          <div class="response-vault" data-intake-response-vault></div>
+        </section>
+
+        <section class="dashboard-panel enterprise-panel" id="template-library">
+          <div class="section-title">
+            <p>Document Template Library</p>
+            <h2>Proposals, Agreements, Invoices, NDAs & Welcome Packets</h2>
+          </div>
+          <form class="quick-form compact-form" data-template-form>
+            <input name="name" placeholder="Template name" required>
+            <select name="type"><option>Consulting Agreement</option><option>Master Service Agreement</option><option>Statement of Work</option><option>Proposal</option><option>NDA</option><option>Terms & Conditions</option><option>Change Order</option><option>Invoice</option><option>Welcome Packet</option><option>Custom Document</option></select>
+            <select name="service"><option>All Services</option><option>Foundation</option><option>Growth</option><option>Scale</option></select>
+            <input name="version" placeholder="Version">
+            <button type="submit">Add Template</button>
+          </form>
+          <div class="template-library-grid" data-template-library-grid></div>
+        </section>
+
+        <section class="dashboard-panel enterprise-panel" id="esignatures">
+          <div class="section-title">
+            <p>E-Signature Command Center</p>
+            <h2>Provider-Ready Signature Packets & Audit Trail</h2>
+          </div>
+          <form class="quick-form compact-form" data-signature-form>
+            <select name="client" data-client-options-signatures required></select>
+            <select name="templateId" data-template-options required></select>
+            <select name="provider"><option>DocuSign</option><option>Dropbox Sign</option><option>Adobe Sign</option></select>
+            <select name="status"><option>Pending</option><option>Viewed</option><option>Signed</option><option>Declined</option><option>Expired</option><option>Needs Revision</option><option>Completed</option></select>
+            <button type="submit">Send Packet</button>
+          </form>
+          <div class="signature-grid" data-signature-grid></div>
+        </section>
+
+        <section class="dashboard-panel enterprise-panel" id="onboarding">
+          <div class="section-title">
+            <p>Live Onboarding Checklist</p>
+            <h2>Unlock Payment & Project Automation When Requirements Are Complete</h2>
+          </div>
+          <div class="enterprise-split">
+            <label class="control-card">Client<select data-onboarding-client></select></label>
+            <article class="enterprise-card">
+              <span>Completion</span>
+              <strong data-onboarding-percent>0%</strong>
+              <div class="progress-track"><i data-onboarding-progress></i></div>
+              <p data-onboarding-next>Next action pending.</p>
+              <button type="button" data-run-onboarding-automation>Run Project Automation</button>
+            </article>
+          </div>
+          <div class="onboarding-checklist-grid" data-onboarding-checklist></div>
+        </section>
+
+        <section class="dashboard-panel enterprise-panel" id="projects">
+          <div class="section-title">
+            <p>Project Automation</p>
+            <h2>Client Workspaces, Owners, Milestones & Project Tracking</h2>
+          </div>
+          <form class="quick-form compact-form" data-project-form>
+            <select name="client" data-client-options-projects required></select>
+            <input name="name" placeholder="Project name" required>
+            <select name="consultant"><option>Aida Morales</option><option>Michael Cocom</option><option>Silverback Team</option></select>
+            <select name="status"><option>Project Created</option><option>Project In Progress</option><option>Project Review</option><option>Project Completed</option></select>
+            <input name="nextMilestone" placeholder="Next milestone">
+            <button type="submit">Create Project</button>
+          </form>
+          <div class="project-grid" data-project-grid></div>
+        </section>
+
+        <section class="dashboard-panel workbench-panel" id="workbench">
+          <div class="section-title">
+            <p>Operating Workbench</p>
+            <h2>Editable Daily Notes, Decisions & Follow-Up Brain</h2>
+          </div>
+          <div class="workbench-grid">
+            <label class="workbench-notes-card">
+              Leadership Notes
+              <textarea data-workbench-notes placeholder="Type meeting notes, boss feedback, pricing decisions, client priorities, or anything Silverback needs to remember."></textarea>
+            </label>
+            <article>
+              <h3>AI Operating Prompts</h3>
+              <div data-workbench-prompts></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="dashboard-panel system-panel" id="automation">
+          <div class="section-title">
+            <p>Automation Center</p>
+            <h2>Email, Follow-Up & Workflow Automation</h2>
+          </div>
+          <p class="human-loop-note">Automation stays leader-controlled: edit details, change ownership, pause workflows, or reorder priorities before anything becomes production behavior.</p>
+          <form class="quick-form automation-form" data-automation-form>
+            <input name="workflow" placeholder="Workflow name" required>
+            <input name="trigger" placeholder="Trigger">
+            <input name="owner" placeholder="Owner">
+            <select name="channel">
+              <option>Email</option>
+              <option>CRM Task</option>
+              <option>Portal Notice</option>
+              <option>Invoice Reminder</option>
+            </select>
+            <select name="status">
+              <option>Ready</option>
+              <option>Live</option>
+              <option>Planned</option>
+              <option>Needs Backend</option>
+              <option>Paused</option>
+              <option>Needs Review</option>
+            </select>
+            <button type="submit">Add Automation</button>
+          </form>
+          <div class="system-grid" data-automation-grid></div>
+          <div class="email-queue">
+            <article>
+              <h3>Email Queue Preview</h3>
+              <div data-email-queue></div>
+            </article>
+            <article>
+              <h3>Backend Hook Plan</h3>
+              <p>Website forms can route to Aida and Michael through Azure Functions, SendGrid, Microsoft Graph, or Gmail SMTP once the production email account is authorized.</p>
+            </article>
+          </div>
+          <div class="notification-history-panel">
+            <div>
+              <h3>Notification History</h3>
+              <p>Tracks appointment confirmations, reminders, cancellations, reschedules, failed attempts, and retries tied to the correct client and timestamp.</p>
+            </div>
+            <div data-notification-history></div>
+          </div>
+        </section>
+
+        <section class="dashboard-panel enterprise-panel" id="admin-config">
+          <div class="section-title">
+            <p>Admin Configuration</p>
+            <h2>Rules, Required Documents, Notifications & Email Templates</h2>
+          </div>
+          <form class="admin-config-form" data-admin-config-form>
+            <label>Notification Recipients<textarea name="notificationRecipients" rows="2"></textarea></label>
+            <label>Required Documents<textarea name="requiredDocuments" rows="2"></textarea></label>
+            <label>Required Intake Forms<textarea name="requiredForms" rows="2"></textarea></label>
+            <label>Reminder Schedule<textarea name="reminderSchedule" rows="2"></textarea></label>
+            <label>Payment Rule<select name="paymentRequiresSignedDocs"><option value="true">Payment locked until required documents are signed</option><option value="false">Allow payment before all documents are signed</option></select></label>
+            <label>Welcome Email Template<textarea name="welcomeEmail" rows="4"></textarea></label>
+            <label>Payment Reminder Template<textarea name="paymentReminderEmail" rows="4"></textarea></label>
+            <button type="submit">Save Admin Configuration</button>
+          </form>
+        </section>
+
+        <section class="dashboard-panel system-panel" id="security">
+          <div class="section-title">
+            <p>Security & Reliability</p>
+            <h2>Production Control Layer</h2>
+          </div>
+          <div class="readiness-grid" data-security-grid></div>
+          <div class="permission-matrix">
+            <article>
+              <h3>Owner / Admin</h3>
+              <p>Full CRM, reporting, client records, invoices, portal controls, integrations, and exports.</p>
+            </article>
+            <article>
+              <h3>Advisor / Team</h3>
+              <p>Clients, tasks, KPIs, notes, assessment updates, and client communication history.</p>
+            </article>
+            <article>
+              <h3>Client Portal User</h3>
+              <p>Only their dashboard, documents, invoices, messages, milestones, signatures, and payment history.</p>
+            </article>
+            <article>
+              <h3>Investor / External</h3>
+              <p>Intake status, scheduled calls, approved documents, and public-facing communication only.</p>
+            </article>
+          </div>
+          <div class="audit-strip">
+            <h3>Security Audit Trail</h3>
+            <div data-security-audit></div>
+          </div>
+        </section>
+
+        <section class="dashboard-panel system-panel" id="integrations">
+          <div class="section-title">
+            <p>Integration Hub</p>
+            <h2>Connected Systems Roadmap</h2>
+          </div>
+          <div class="integration-grid" data-integration-grid></div>
+        </section>
+
+        <section class="dashboard-panel production-panel" id="production-stack">
+          <div class="section-title">
+            <p>Production Readiness</p>
+            <h2>Security, Payments, Signatures & Data Stack</h2>
+          </div>
+          <div class="production-hero">
+            <article>
+              <span>Backend Blueprint</span>
+              <strong data-production-score>0/8</strong>
+              <p>Core production systems are mapped for Azure, identity, finance, and client operations.</p>
+            </article>
+            <article>
+              <span>Security Direction</span>
+              <strong>Azure First</strong>
+              <p>Microsoft Entra ID, role-based access, audit events, and secure storage are staged for production.</p>
+            </article>
+            <article>
+              <span>Client Trust Rule</span>
+              <strong>No Card Storage</strong>
+              <p>Payments stay inside verified providers such as Stripe, Square, PayPal, Venmo, Apple Pay, and Google Pay.</p>
+            </article>
+          </div>
+          <div class="production-grid" data-production-grid></div>
+          <div class="roadmap-strip" data-production-roadmap></div>
+        </section>
+
+        <section class="dashboard-panel command-center">
+          <div class="section-title">
+            <p>Executive Command Center</p>
+            <h2>What Needs Attention</h2>
+          </div>
+          <div class="command-grid">
+            <article>
+              <h3>Priority Today</h3>
+              <div data-priority-today></div>
+            </article>
+            <article>
+              <h3>Client Risk Watch</h3>
+              <div data-risk-watch></div>
+            </article>
+            <article>
+              <h3>Upcoming Revenue</h3>
+              <div data-revenue-watch></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="dashboard-panel ceo-dashboard-panel" id="ceo-dashboard">
           <div class="section-title">
             <p>Daily Operating Page</p>
-            <h2>Today's CEO Dashboard</h2>
+            <h2>Today's CEO Command Board</h2>
           </div>
-          <div class="daily-grid">
-            <label>Today's Priorities<textarea data-daily="priorities" placeholder="1.&#10;2.&#10;3."></textarea></label>
-            <label>Clients To Check On<textarea data-daily="clients" placeholder="1.&#10;2.&#10;3."></textarea></label>
-            <label>Money Tasks<textarea data-daily="money" placeholder="1.&#10;2."></textarea></label>
-            <label>Content / Marketing<textarea data-daily="content" placeholder="1."></textarea></label>
-            <label>Done Today<textarea data-daily="done" placeholder="1.&#10;2.&#10;3."></textarea></label>
+          <div class="ceo-dashboard-layout">
+            <aside class="ceo-ai-panel">
+              <div>
+                <span class="status-dot ready">AI Assisted</span>
+                <h3>Silverback Priority Intelligence</h3>
+                <p>Suggested from open tasks, client risk, revenue opportunities, invoices, and KPI status.</p>
+              </div>
+              <div class="ceo-focus-metrics">
+                <article><span>Due Today</span><strong data-ceo-due>0</strong></article>
+                <article><span>Revenue Focus</span><strong data-ceo-revenue>$0</strong></article>
+                <article><span>Risk Flags</span><strong data-ceo-risk>0</strong></article>
+              </div>
+              <div class="ai-suggestion-list" data-ai-suggestions></div>
+              <button type="button" data-generate-ceo-plan>Generate CEO Plan</button>
+            </aside>
+            <div class="ceo-board-wrap">
+              <form class="quick-form ceo-task-form" data-ceo-task-form>
+                <input name="title" placeholder="Add CEO task or priority" required>
+                <select name="lane">
+                  <option value="today">Today</option>
+                  <option value="week">This Week</option>
+                  <option value="month">This Month</option>
+                  <option value="done">Done</option>
+                </select>
+                <select name="priority">
+                  <option>High</option>
+                  <option>Medium</option>
+                  <option>Low</option>
+                </select>
+                <select name="type">
+                  <option>Client</option>
+                  <option>Money</option>
+                  <option>Operations</option>
+                  <option>Marketing</option>
+                  <option>Leadership</option>
+                </select>
+                <button type="submit">Add Card</button>
+              </form>
+              <div class="ceo-board" data-ceo-board></div>
+            </div>
           </div>
         </section>
 
@@ -244,11 +663,82 @@
             <select name="priority"><option>High</option><option>Medium</option><option>Low</option></select>
             <select name="status"><option>Not Started</option><option>In Progress</option><option>Waiting</option><option>Done</option></select>
             <input name="dueDate" type="date">
+            <select name="cadence"><option>Daily</option><option>Weekly</option><option>Monthly</option><option>One-Time</option></select>
             <select name="category"><option>Legal</option><option>Financial</option><option>Operations</option><option>Marketing</option><option>Sales</option><option>Admin</option></select>
             <input name="notes" placeholder="Notes">
             <button type="submit">Add Task</button>
           </form>
+          <div class="task-metrics">
+            <article><span>Daily</span><strong data-cadence-daily>0</strong></article>
+            <article><span>Weekly</span><strong data-cadence-weekly>0</strong></article>
+            <article><span>Monthly</span><strong data-cadence-monthly>0</strong></article>
+            <article><span>One-Time</span><strong data-cadence-onetime>0</strong></article>
+          </div>
           <div class="kanban" data-task-board></div>
+        </section>
+
+        <section class="dashboard-panel" id="operating-plan">
+          <div class="section-title">
+            <p>Client Tracking System</p>
+            <h2>Daily, Weekly & Monthly Operating Plan</h2>
+          </div>
+          <div class="cadence-board" data-cadence-board></div>
+        </section>
+
+        <section class="dashboard-panel" id="accounting">
+          <div class="section-title">
+            <p>Accounting & Revenue Operations</p>
+            <h2>Invoice Creator</h2>
+          </div>
+          <form class="quick-form invoice-form" data-invoice-form>
+            <input name="invoiceNumber" placeholder="Invoice #">
+            <select name="client" data-client-options-invoices></select>
+            <input name="service" placeholder="Service / description" required>
+            <input name="hours" type="number" step="0.25" min="0" placeholder="Billable hours">
+            <input name="rate" type="number" step="0.01" min="0" placeholder="Hourly rate">
+            <input name="flatFee" type="number" step="0.01" min="0" placeholder="Flat fee">
+            <input name="invoiceDate" type="date">
+            <input name="dueDate" type="date">
+            <select name="status"><option>Draft</option><option>Sent</option><option>Paid</option><option>Overdue</option></select>
+            <button type="submit">Create Invoice</button>
+          </form>
+          <div class="accounting-grid">
+            <article>
+              <span>Draft</span>
+              <strong data-invoice-draft>$0</strong>
+            </article>
+            <article>
+              <span>Sent / Due</span>
+              <strong data-invoice-sent>$0</strong>
+            </article>
+            <article>
+              <span>Paid</span>
+              <strong data-invoice-paid>$0</strong>
+            </article>
+            <article>
+              <span>Overdue</span>
+              <strong data-invoice-overdue>$0</strong>
+            </article>
+          </div>
+          <div class="ops-split">
+            <article class="ops-card">
+              <h3>Payment Rails</h3>
+              <div data-payment-rails></div>
+            </article>
+            <article class="ops-card">
+              <h3>QuickBooks Sync</h3>
+              <div data-accounting-sync></div>
+            </article>
+          </div>
+          <div class="invoice-list" data-invoice-list></div>
+        </section>
+
+        <section class="dashboard-panel" id="documents">
+          <div class="section-title">
+            <p>Secure Document Vault</p>
+            <h2>Client Files, Statements & Signature Packages</h2>
+          </div>
+          <div class="vault-grid" data-document-vault></div>
         </section>
 
         <section class="dashboard-panel" id="activity">
@@ -270,10 +760,45 @@
         <section class="dashboard-panel" id="assessment">
           <div class="section-title">
             <p>Business Assessment</p>
-            <h2>Client Assessment Template</h2>
+            <h2>Enterprise Business Health Assessment</h2>
           </div>
-          <select data-assessment-client></select>
-          <textarea class="assessment-box" data-assessment-text></textarea>
+          <div class="assessment-shell">
+            <div class="assessment-toolbar">
+              <label>
+                Client
+                <select data-assessment-client></select>
+              </label>
+              <div class="assessment-progress-card">
+                <span>Completion</span>
+                <strong data-assessment-progress-text>0%</strong>
+                <div class="assessment-progress-bar"><i data-assessment-progress-bar></i></div>
+              </div>
+              <div class="assessment-actions">
+                <button type="button" data-assessment-save>Save Draft</button>
+                <button type="button" data-assessment-resume>Resume Later</button>
+                <button type="button" data-assessment-submit>Submit</button>
+                <button type="button" data-assessment-export>Export PDF</button>
+              </div>
+            </div>
+            <div class="assessment-summary-grid">
+              <article>
+                <span>Status</span>
+                <strong data-assessment-status>Draft</strong>
+              </article>
+              <article>
+                <span>Last Saved</span>
+                <strong data-assessment-updated>Not saved</strong>
+              </article>
+              <article>
+                <span>Readiness Score</span>
+                <strong data-assessment-score>0 / 100</strong>
+              </article>
+            </div>
+            <p class="assessment-error" data-assessment-error></p>
+            <form class="assessment-form" data-assessment-form novalidate>
+              <div class="assessment-sections" data-assessment-sections></div>
+            </form>
+          </div>
         </section>
 
         <section class="dashboard-panel" id="reports">
@@ -293,6 +818,22 @@
             <article>
               <h3>Tasks by Category</h3>
               <div data-category-report></div>
+            </article>
+            <article>
+              <h3>CRM Capability Match</h3>
+              <div class="capability-list">
+                <p><strong>HubSpot-style:</strong> contacts, deals, tasks, activities, marketing tracker, simple reporting, fast follow-up visibility.</p>
+                <p><strong>Salesforce-style:</strong> pipeline stages, weighted forecast, KPI tracking, client lifecycle movement, revenue operations.</p>
+                <p><strong>Silverback-specific:</strong> Foundation/Growth/Scale process, business assessment, SOPs, portal readiness, invoices, billable hours.</p>
+              </div>
+            </article>
+            <article>
+              <h3>Enterprise Readiness Report</h3>
+              <div data-enterprise-report></div>
+            </article>
+            <article>
+              <h3>Analytics & Conversion</h3>
+              <div data-analytics-report></div>
             </article>
           </div>
         </section>
@@ -325,6 +866,6 @@
 
     <div class="toast" data-toast hidden></div>
 
-    <script src="crm.js?v=crm-cleanup-1"></script>
+    <script src="crm.js?v=crm-nav-fix-1"></script>
   </body>
 </html>

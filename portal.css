@@ -402,6 +402,159 @@ button {
   color: var(--paper);
 }
 
+.portal-assessment-head {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr 1fr;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.portal-assessment-head article,
+.portal-assessment-card {
+  min-width: 0;
+  border: 1px solid rgba(230, 224, 210, 0.18);
+  border-radius: 24px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.035)),
+    rgba(20, 20, 20, 0.78);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
+}
+
+.portal-assessment-head article,
+.portal-assessment-card {
+  padding: 16px;
+}
+
+.portal-assessment-head span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.portal-assessment-head strong {
+  display: block;
+  margin-top: 7px;
+  color: var(--paper);
+  font-size: 1.2rem;
+}
+
+.portal-progress {
+  height: 10px;
+  margin-top: 12px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.portal-progress i {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--accent), var(--accent-soft));
+}
+
+.portal-assessment-error {
+  min-height: 22px;
+  margin: 0 0 10px;
+  color: var(--accent-soft);
+  font-weight: 900;
+}
+
+.portal-assessment-form > div {
+  display: grid;
+  gap: 14px;
+}
+
+.portal-assessment-card h3 {
+  margin: 0 0 14px;
+  color: var(--paper);
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: clamp(1.15rem, 2vw, 1.55rem);
+}
+
+.portal-assessment-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.portal-assessment-field {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  color: var(--paper);
+  font-weight: 900;
+}
+
+.portal-wide {
+  grid-column: 1 / -1;
+}
+
+.portal-assessment-field input,
+.portal-assessment-field select,
+.portal-assessment-field textarea {
+  width: 100%;
+  min-width: 0;
+}
+
+.portal-assessment-field em,
+.portal-assessment-field legend em {
+  margin-left: 6px;
+  color: var(--accent-soft);
+  font-size: 0.66rem;
+  font-style: normal;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.portal-choice-row,
+.portal-checkbox-grid,
+.portal-rating-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.portal-choice-row label,
+.portal-checkbox-grid label,
+.portal-rating-row label {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 10px;
+  border: 1px solid rgba(230, 224, 210, 0.18);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--paper);
+  font-size: 0.82rem;
+  line-height: 1.15;
+}
+
+.portal-rating-row label {
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+}
+
+.portal-assessment-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.portal-assessment-actions button {
+  min-width: 160px;
+}
+
 .portal-topbar h1,
 .section-title h2 {
   margin: 6px 0 0;
@@ -711,6 +864,16 @@ button {
   gap: 14px;
 }
 
+.portal-empty {
+  margin: 0;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.34);
+  color: var(--muted);
+  font-weight: 800;
+}
+
 .document-grid {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
@@ -815,6 +978,96 @@ button {
   font-weight: 800;
 }
 
+.portal-onboarding-panel {
+  display: grid;
+  gap: 14px;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.8), rgba(221, 221, 215, 0.5)),
+    var(--surface);
+  box-shadow: var(--shadow-soft);
+}
+
+.portal-onboarding-panel header,
+.portal-checklist-grid article {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.portal-onboarding-panel strong {
+  font-family: var(--serif);
+  font-size: clamp(2.2rem, 5vw, 4.4rem);
+  line-height: 0.9;
+}
+
+.portal-onboarding-panel span {
+  display: block;
+  color: var(--muted);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.portal-onboarding-next {
+  margin: 0;
+  color: var(--ink);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.portal-checklist-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.portal-checklist-grid article {
+  align-items: flex-start;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.64);
+}
+
+.portal-checklist-grid article.complete {
+  border-color: rgba(71, 112, 88, 0.36);
+  background: rgba(224, 236, 226, 0.72);
+}
+
+.portal-checklist-grid h4 {
+  margin: 0 0 6px;
+  font-size: 0.96rem;
+}
+
+.portal-checklist-grid p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.portal-check-status {
+  flex: 0 0 auto;
+  min-width: 92px;
+  padding: 8px 10px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.portal-checklist-grid article.complete .portal-check-status {
+  background: #477058;
+}
+
 @media (max-width: 1180px) {
   .portal-shell {
     grid-template-columns: 220px minmax(0, 1fr);
@@ -845,7 +1098,10 @@ button {
   .process-track,
   .security-grid,
   .portal-account-bar,
-  .portal-command-grid {
+  .portal-command-grid,
+  .portal-assessment-head,
+  .portal-assessment-grid,
+  .portal-checklist-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -901,7 +1157,10 @@ button {
   .security-grid,
   .statement-grid,
   .home-detail-grid,
-  .portal-command-grid {
+    .portal-command-grid,
+    .portal-assessment-head,
+    .portal-assessment-grid,
+    .portal-checklist-grid {
     grid-template-columns: 1fr;
   }
 

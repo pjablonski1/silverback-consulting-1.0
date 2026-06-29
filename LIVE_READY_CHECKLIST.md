@@ -19,19 +19,23 @@ Use this before publishing the site publicly.
 - Deploy through Azure Static Web Apps or equivalent.
 - Keep `staticwebapp.config.json` with security headers enabled.
 - Connect custom domain and SSL.
-- Replace demo localStorage CRM with backend database.
+- Replace browser localStorage CRM with backend database.
 - Add environment variables for API keys and secrets.
 
 ## Authentication / Security
-- Replace demo access codes with Azure AD B2C or comparable authentication.
+- Replace temporary access codes with Azure AD B2C or comparable authentication.
 - Enable MFA for admin and client portal access.
 - Use role-based permissions for admin, team member, client, and investor views.
 - Store documents in secure cloud storage with signed URLs.
 - Add server-side audit logs for login, documents, payments, messages, and data changes.
 
 ## Email Notifications
-- Replace `mailto` notifications with backend email automation.
-- Recommended options: Microsoft Graph, SendGrid, Azure Communication Services, or Google Workspace/Gmail API.
+- Deploy the included Azure Functions in the `api` folder.
+- Set API location to `api` in Azure Static Web Apps.
+- Configure Azure Queue Storage for appointment email events.
+- Verify Azure Communication Services sender domain and `ACS_SENDER_ADDRESS`.
+- Set `SILVERBACK_NOTIFICATION_RECIPIENTS` to `aidamorales2014@yahoo.com,cocommichael@yahoo.com`.
+- Confirm booking, reminder, cancellation, reschedule, failed, and retry events appear in Silverback HQ notification history.
 - Add email templates for appointments, investor intake, client messages, document signing, and payments.
 
 ## Payments / Banking
@@ -52,5 +56,4 @@ Use this before publishing the site publicly.
 - Test keyboard navigation and screen reader basics.
 - Test all links, forms, modals, AI chat, client portal, CRM, Privacy, Terms, Accessibility, and 404 page.
 - Test bad URL behavior after deployment.
-- Verify no demo-only wording appears in public-facing production pages.
-
+- Verify no temporary-release wording appears in public-facing production pages.
