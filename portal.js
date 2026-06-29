@@ -32,7 +32,7 @@ const starterDocuments = [];
 
 const starterInvoices = [];
 
-const notificationEmails = ["cocommichael@yahoo.com", "aidamorales2014@yahoo.com"];
+const notificationEmails = ["michaelcocom@yahoo.com", "aidamorales2014@gmail.com"];
 
 const clientAssessmentBlueprint = [
   { id: "profile", title: "Company Profile", fields: [

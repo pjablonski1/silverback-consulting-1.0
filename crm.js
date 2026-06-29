@@ -81,7 +81,7 @@ const starterOnboardingConfig = {
   requiredDocuments: ["Consulting Agreement", "NDA"],
   requiredForms: ["Business Startup Intake", "Growth & Operations Intake"],
   paymentRequiresSignedDocs: true,
-  notificationRecipients: ["aidamorales2014@yahoo.com", "cocommichael@yahoo.com", "sbph2026@gmail.com"],
+  notificationRecipients: ["aidamorales2014@gmail.com", "michaelcocom@yahoo.com", "sbph2026@gmail.com"],
   reminderSchedule: ["24 hours after send", "3 days before due date", "7 days after inactivity"],
   welcomeEmail: "Welcome to Silverback Consulting. Your portal is ready and your next required action is listed on your home screen.",
   paymentReminderEmail: "Your invoice is ready once required onboarding documents are complete. Please log into the portal to review next steps."
@@ -177,9 +177,9 @@ const starterCeoBoard = {
 };
 
 const starterAutomations = [
-  { workflow: "New lead alert", trigger: "Website form submitted", owner: "Aida + Michael", channel: "Email", status: "Ready" },
-  { workflow: "Future investor follow-up", trigger: "Investor intake submitted", owner: "Michael", channel: "Email", status: "Ready" },
-  { workflow: "Appointment confirmation", trigger: "Consultation scheduled", owner: "Aida + Michael", channel: "Email", status: "Ready" },
+  { workflow: "New lead alert", trigger: "Website form submitted", owner: "Aida + Michael", channel: "Email", status: "Configuration Required" },
+  { workflow: "Future investor follow-up", trigger: "Investor intake submitted", owner: "Michael", channel: "Email", status: "Configuration Required" },
+  { workflow: "Appointment confirmation", trigger: "Consultation scheduled", owner: "Aida + Michael", channel: "Email", status: "Configuration Required" },
   { workflow: "Invoice reminder", trigger: "Invoice due in 3 days", owner: "Finance", channel: "Invoice Reminder", status: "Planned" },
   { workflow: "Client weekly check-in", trigger: "Active client without contact in 7 days", owner: "Advisor", channel: "CRM Task", status: "Planned" }
 ];
@@ -187,16 +187,16 @@ const starterAutomations = [
 const starterIntegrations = [
   { name: "Azure Static Web Apps", category: "Hosting", status: "Live", detail: "Production front-end hosting with SSL and GitHub deployment." },
   { name: "GitHub", category: "Deployment", status: "Live", detail: "Version control and deployment source." },
-  { name: "Microsoft Entra ID", category: "Authentication", status: "Ready", detail: "Production login, MFA, and role claims for owners, advisors, clients, and investors." },
+  { name: "Microsoft Entra ID", category: "Authentication", status: "Configuration Required", detail: "Production login, MFA, and role claims are prepared; owners must be created in Azure before live use." },
   { name: "Google Analytics 4", category: "Analytics", status: "Setup Required", detail: "Add the live GA4 measurement ID after the Silverback web data stream is created." },
-  { name: "Azure Functions Email Router", category: "Communication", status: "Ready", detail: "Website forms and portal notices can notify Aida, Michael, and the company inbox." },
-  { name: "DocuSign", category: "E-Signature", status: "Ready", detail: "Client disclosures, agreements, and onboarding signatures are mapped to envelope flows." },
-  { name: "Stripe / Square / PayPal", category: "Payments", status: "Ready", detail: "Card, wallet, PayPal, Venmo, Apple Pay, and Google Pay rails stay outside the CRM." },
-  { name: "Plaid", category: "Financial Data", status: "Ready", detail: "Bank verification and permissioned financial data access for client-side finance workflows." },
-  { name: "QuickBooks", category: "Accounting", status: "Ready", detail: "Invoice sync, revenue reporting, billable hours, and reconciliation path." },
-  { name: "Azure Blob Storage", category: "Documents", status: "Ready", detail: "Secure file storage path for statements, contracts, assessments, and portal documents." },
-  { name: "Application Insights", category: "Monitoring", status: "Ready", detail: "Production uptime, errors, and performance monitoring once backend services are active." },
-  { name: "Google Drive", category: "Documents", status: "Ready", detail: "Client workspace links and document organization." }
+  { name: "Azure Functions Email Router", category: "Communication", status: "Configuration Required", detail: "Website forms and portal notices are wired for queue-based email once Azure app settings are configured." },
+  { name: "DocuSign", category: "E-Signature", status: "Prepared", detail: "Client disclosures, agreements, and onboarding signatures are mapped to future envelope flows." },
+  { name: "Stripe / Square / PayPal", category: "Payments", status: "Prepared", detail: "Card, wallet, PayPal, Venmo, Apple Pay, and Google Pay rails stay outside the CRM." },
+  { name: "Plaid", category: "Financial Data", status: "Prepared", detail: "Bank verification and permissioned financial data access are planned for client-side finance workflows." },
+  { name: "QuickBooks", category: "Accounting", status: "Prepared", detail: "Invoice sync, revenue reporting, billable hours, and reconciliation fields are mapped." },
+  { name: "Azure Blob Storage", category: "Documents", status: "Configuration Required", detail: "Secure file storage path is prepared for statements, contracts, assessments, and portal documents." },
+  { name: "Application Insights", category: "Monitoring", status: "Configuration Required", detail: "Production uptime, errors, and performance monitoring activate after Azure instrumentation is configured." },
+  { name: "Google Drive", category: "Documents", status: "Prepared", detail: "Client workspace links and document organization are supported without storing Drive credentials." }
 ];
 
 const starterAuditEvents = [];
@@ -799,13 +799,13 @@ function securityScore() {
 
 function securityChecks() {
   return [
-    { name: "Protected Admin Session", status: "Active", detail: "CRM locks after inactivity and requires an access code for controlled admin access." },
-    { name: "Azure Auth Path", status: "Ready", detail: "Production can connect to Microsoft Entra ID for true user login." },
-    { name: "Role-Based Access", status: "Ready", detail: "Owner, advisor, client, and investor roles are mapped for backend enforcement." },
+    { name: "Protected Admin Session", status: "Active", detail: "CRM locks after inactivity. Azure Static Web Apps protects the live CRM route before the page loads." },
+    { name: "Azure Auth Path", status: "Configuration Required", detail: "Microsoft Entra ID owner accounts, MFA, and role assignments must be completed in Azure." },
+    { name: "Role-Based Access", status: "Prepared", detail: "Owner, advisor, client, and investor roles are mapped for backend enforcement." },
     { name: "Audit Trail", status: "Active", detail: "Client actions, invoice events, and security events are visible in HQ." },
     { name: "Data Export Backup", status: "Active", detail: "Full CRM export creates a portable JSON backup." },
-    { name: "Payment Data Isolation", status: "Ready", detail: "Card and bank data should stay inside Stripe, PayPal, Plaid, and banking providers." },
-    { name: "Production Monitoring", status: "Ready", detail: "Azure deployment, GA4 traffic, and future uptime checks are planned." }
+    { name: "Payment Data Isolation", status: "Prepared", detail: "Card and bank data should stay inside Stripe, PayPal, Plaid, and banking providers." },
+    { name: "Production Monitoring", status: "Configuration Required", detail: "Azure deployment, GA4 traffic, and uptime checks require live provider keys." }
   ];
 }
 
@@ -831,10 +831,10 @@ function crmReadinessChecks() {
   return [
     { name: "Demo Data Removed", status: demoFree ? "Active" : "Needs Review", detail: demoFree ? "Client, appointment, invoice, onboarding, document, payment, and notification records are clean." : "A cleanup keyword still appears in stored CRM records." },
     { name: "Real Data Mode Enabled", status: localStorage.getItem(keys.cleanup) === "complete" ? "Active" : "Needs Review", detail: "CRM tables start empty and dashboard counts calculate from real records only." },
-    { name: "Authentication Enabled", status: "Active", detail: "Admin and client portals are access-code protected, with Azure identity mapped for production upgrade." },
-    { name: "Environment Variables Configured", status: "Ready", detail: "Email recipients, queue names, and provider keys are designed for Azure app settings instead of hardcoded secrets." },
-    { name: "API Connected", status: "Ready", detail: "Website appointment events are wired to the Azure notification endpoint when deployed." },
-    { name: "Database / Storage Connected", status: "Active", detail: "Current records persist in browser storage for this release; Azure database storage is the next production hardening step." }
+    { name: "Authentication Enabled", status: "Configuration Required", detail: "Azure Static Web Apps route protection is configured; create Entra owner accounts before live CRM use." },
+    { name: "Environment Variables Configured", status: "Configuration Required", detail: "Email recipients, queue names, provider keys, and database settings must be added in Azure app settings." },
+    { name: "API Connected", status: "Configuration Required", detail: "Website appointment events are wired to the Azure notification endpoint after Functions app settings are configured." },
+    { name: "Database / Storage Connected", status: "Configuration Required", detail: "Browser storage supports preview mode; production client records need Azure database or storage connection." }
   ];
 }
 

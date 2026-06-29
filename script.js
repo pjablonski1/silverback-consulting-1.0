@@ -17,7 +17,7 @@ const scheduleStatus = document.querySelector("[data-schedule-status]");
 const scheduleDate = scheduleForm?.querySelector('input[name="meetingDate"]');
 let lastModalTrigger = null;
 
-const notificationEmails = ["cocommichael@yahoo.com", "aidamorales2014@yahoo.com"];
+const notificationEmails = ["michaelcocom@yahoo.com", "aidamorales2014@gmail.com"];
 
 const crmKeys = {
   clients: "silverbackClientsV2",

@@ -34,7 +34,7 @@ Use this before publishing the site publicly.
 - Set API location to `api` in Azure Static Web Apps.
 - Configure Azure Queue Storage for appointment email events.
 - Verify Azure Communication Services sender domain and `ACS_SENDER_ADDRESS`.
-- Set `SILVERBACK_NOTIFICATION_RECIPIENTS` to `aidamorales2014@yahoo.com,cocommichael@yahoo.com`.
+- Set `SILVERBACK_NOTIFICATION_RECIPIENTS` to `aidamorales2014@gmail.com,michaelcocom@yahoo.com`.
 - Confirm booking, reminder, cancellation, reschedule, failed, and retry events appear in Silverback HQ notification history.
 - Add email templates for appointments, investor intake, client messages, document signing, and payments.
 
