@@ -257,9 +257,33 @@ main,
 
 .login-card label {
   display: grid;
+  margin-top: 14px;
   gap: 8px;
   color: var(--charcoal);
   font-weight: 900;
+}
+
+.password-reset-panel {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid rgba(35, 35, 35, 0.18);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.46);
+}
+
+.password-reset-panel[hidden] {
+  display: none;
+}
+
+.password-reset-panel p {
+  margin-bottom: 0;
+  color: var(--ink);
+}
+
+.password-reset-panel label {
+  margin-top: 0;
 }
 
 .login-card button {
@@ -2615,9 +2639,66 @@ th {
   justify-self: start;
 }
 
+.password-change-form {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  padding: 22px;
+  margin: 22px 0;
+  border: 1px solid rgba(58, 55, 48, 0.14);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.52);
+}
+
+.password-change-form > div,
+.password-change-form button,
+.password-change-form [data-password-change-status] {
+  grid-column: 1 / -1;
+}
+
+.password-change-form h3 {
+  margin: 0 0 8px;
+}
+
+.password-change-form p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.password-change-form label {
+  display: grid;
+  gap: 8px;
+  color: var(--charcoal);
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.password-change-form input {
+  width: 100%;
+  border: 1px solid rgba(35, 35, 35, 0.14);
+  border-radius: 14px;
+  padding: 12px 13px;
+  background: rgba(255, 255, 255, 0.74);
+  color: var(--ink);
+  font: inherit;
+}
+
+.password-change-form button {
+  justify-self: start;
+}
+
+.password-change-form [data-password-change-status] {
+  min-height: 20px;
+  color: var(--muted);
+  font-weight: 800;
+}
+
 @media (max-width: 920px) {
   .enterprise-split,
-  .admin-config-form {
+  .admin-config-form,
+  .password-change-form {
     grid-template-columns: 1fr;
   }
 

@@ -187,7 +187,7 @@ const starterAutomations = [
 const starterIntegrations = [
   { name: "Azure Static Web Apps", category: "Hosting", status: "Live", detail: "Production front-end hosting with SSL and GitHub deployment." },
   { name: "GitHub", category: "Deployment", status: "Live", detail: "Version control and deployment source." },
-  { name: "Microsoft Entra ID", category: "Authentication", status: "Configuration Required", detail: "Production login, MFA, and role claims are prepared; owners must be created in Azure before live use." },
+  { name: "Silverback HQ Login", category: "Authentication", status: "Live", detail: "Approved email login with forced password reset is active; Entra ID remains the future enterprise identity path." },
   { name: "Google Analytics 4", category: "Analytics", status: "Setup Required", detail: "Add the live GA4 measurement ID after the Silverback web data stream is created." },
   { name: "Azure Functions Email Router", category: "Communication", status: "Configuration Required", detail: "Website forms and portal notices are wired for queue-based email once Azure app settings are configured." },
   { name: "DocuSign", category: "E-Signature", status: "Prepared", detail: "Client disclosures, agreements, and onboarding signatures are mapped to future envelope flows." },
@@ -228,11 +228,30 @@ const keys = {
   notificationHistory: "silverbackNotificationHistoryV1",
   daily: "silverbackDailyV2",
   cleanup: "silverbackRealDataCleanupV1",
-  unlocked: "silverbackHqUnlocked"
+  unlocked: "silverbackHqUnlocked",
+  authUsers: "silverbackHqAuthUsersV1",
+  currentUser: "silverbackHqCurrentUser"
 };
 
 const sessionMinutes = 30;
 const idleMinutes = 10;
+const authorizedUsers = {
+  "aidamorales2014@gmail.com": {
+    name: "Aida Morales",
+    role: "Founder & CEO",
+    tempHash: "2cae5ca1ae1d3705d41088afa3e1c30eabd5a60e8136b58f38586fce00faf43f"
+  },
+  "cocommichael@yahoo.com": {
+    name: "Michael Cocom",
+    role: "Co-Founder & Managing Partner",
+    tempHash: "2afec07699f3b80138347e189b8e3eb881f3e1ef9d401a79f776a79dd75ffa1a"
+  },
+  "patinthecloud@yahoo.com": {
+    name: "Patrick Jablonski",
+    role: "Strategic Technology Partner",
+    tempHash: "8ebe102d7afa9e84e1d2e3dd8a0d4c067c8463f9bbd01f5a836b9e4536c91080"
+  }
+};
 
 const store = {
   get clients() { return getData(keys.clients, starterClients); },
@@ -426,8 +445,13 @@ const appMain = document.querySelector(".app-shell main");
 const crmSectionLinks = document.querySelectorAll('.sidebar nav a[href^="#"]');
 const loginForm = document.querySelector("[data-login-form]");
 const loginError = document.querySelector("[data-login-error]");
+const passwordResetPanel = document.querySelector("[data-password-reset]");
+const loginButton = document.querySelector("[data-login-button]");
 const sessionStatus = document.querySelector("[data-session-status]");
+const passwordChangeForm = document.querySelector("[data-password-change-form]");
+const passwordChangeStatus = document.querySelector("[data-password-change-status]");
 let idleTimer;
+let pendingPasswordUser = "";
 
 function scrollToCrmSection(hash, updateHash = true) {
   const target = document.querySelector(hash);
@@ -454,9 +478,13 @@ function unlock() {
 
 function lock(reason = "") {
   localStorage.removeItem(keys.unlocked);
+  localStorage.removeItem(keys.currentUser);
   loginScreen.hidden = false;
   appShell.hidden = true;
   loginError.textContent = reason;
+  pendingPasswordUser = "";
+  if (passwordResetPanel) passwordResetPanel.hidden = true;
+  if (loginButton) loginButton.textContent = "Enter CRM";
   clearTimeout(idleTimer);
 }
 
@@ -469,7 +497,10 @@ function updateSessionStatus() {
   const expiresAt = Number(localStorage.getItem(keys.unlocked));
   if (!expiresAt || !sessionStatus) return;
   const minutesLeft = Math.max(0, Math.ceil((expiresAt - Date.now()) / 60000));
-  sessionStatus.textContent = `Protected session | ${minutesLeft} min`;
+  const currentEmail = localStorage.getItem(keys.currentUser);
+  const profile = currentEmail ? authorizedUsers[currentEmail] : null;
+  const userLabel = profile ? `${profile.name} | ${profile.role}` : "Protected session";
+  sessionStatus.textContent = `${userLabel} | ${minutesLeft} min`;
 }
 
 function resetIdleTimer() {
@@ -480,44 +511,143 @@ function resetIdleTimer() {
 if (isSessionValid()) unlock();
 else localStorage.removeItem(keys.unlocked);
 
-async function unlockIfAzureAuthenticated() {
-  if (!location.protocol.startsWith("http")) return;
-  try {
-    const response = await fetch("/.auth/me", { credentials: "same-origin", cache: "no-store" });
-    if (!response.ok) return;
-    const auth = await response.json();
-    const principal = auth.clientPrincipal;
-    if (!principal) return;
-    const roles = principal.userRoles || [];
-    const hasAdminRole = roles.includes("silverback_admin") || roles.includes("silverback_tech_admin");
-    if (!hasAdminRole && !roles.includes("authenticated")) return;
-    localStorage.setItem(keys.unlocked, String(Date.now() + sessionMinutes * 60000));
-    unlock();
-    if (sessionStatus) {
-      sessionStatus.textContent = `Azure protected session | ${principal.userDetails || "Signed in"}`;
-    }
-  } catch {
-    // Local preview cannot call Azure Static Web Apps auth endpoints.
-  }
+async function sha256(value) {
+  const data = new TextEncoder().encode(value);
+  const digest = await crypto.subtle.digest("SHA-256", data);
+  return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, "0")).join("");
 }
 
-function isAuthorizedLocalPreview(formData) {
-  const code = String(formData.get("accessCode") || "").trim().toUpperCase();
-  return code === "SILVERBACK";
+function getAuthUsers() {
+  return getData(keys.authUsers, {});
 }
 
-unlockIfAzureAuthenticated();
+function setAuthUsers(value) {
+  setData(keys.authUsers, value);
+}
 
-loginForm.addEventListener("submit", (event) => {
+function isStrongPassword(value) {
+  return value.length >= 8 && /[A-Z]/.test(value) && /[a-z]/.test(value) && /\d/.test(value) && /[^A-Za-z0-9]/.test(value);
+}
+
+function finishLogin(email) {
+  localStorage.setItem(keys.currentUser, email);
+  localStorage.setItem(keys.unlocked, String(Date.now() + sessionMinutes * 60000));
+  unlock();
+  if (window.location.hash) requestAnimationFrame(() => scrollToCrmSection(window.location.hash, false));
+}
+
+function showPasswordReset(email) {
+  pendingPasswordUser = email;
+  if (passwordResetPanel) passwordResetPanel.hidden = false;
+  if (loginButton) loginButton.textContent = "Save New Password";
+  loginError.textContent = "Temporary password accepted. Create a new password to continue.";
+  loginForm.querySelector('[name="newPassword"]')?.focus();
+}
+
+loginForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   const formData = new FormData(loginForm);
-  if (isAuthorizedLocalPreview(formData)) {
-    localStorage.setItem(keys.unlocked, String(Date.now() + sessionMinutes * 60000));
-    unlock();
-    if (window.location.hash) requestAnimationFrame(() => scrollToCrmSection(window.location.hash, false));
-  } else {
-    loginError.textContent = "Incorrect local preview code.";
+  const email = String(formData.get("email") || "").trim().toLowerCase();
+  const password = String(formData.get("password") || "");
+  const profile = authorizedUsers[email];
+  if (!profile) {
+    loginError.textContent = "This email is not authorized for Silverback HQ.";
+    return;
   }
+
+  const passwordHash = await sha256(password);
+  const authUsers = getAuthUsers();
+  const savedUser = authUsers[email];
+
+  if (pendingPasswordUser) {
+    if (pendingPasswordUser !== email) {
+      loginError.textContent = "Finish the password change for the signed-in email before switching users.";
+      return;
+    }
+    const newPassword = String(formData.get("newPassword") || "");
+    const confirmPassword = String(formData.get("confirmPassword") || "");
+    if (!isStrongPassword(newPassword)) {
+      loginError.textContent = "Use at least 8 characters with uppercase, lowercase, number, and symbol.";
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      loginError.textContent = "New passwords do not match.";
+      return;
+    }
+    if (await sha256(newPassword) === profile.tempHash) {
+      loginError.textContent = "Choose a new password different from the temporary password.";
+      return;
+    }
+    authUsers[email] = {
+      passwordHash: await sha256(newPassword),
+      passwordChangedAt: new Date().toISOString()
+    };
+    setAuthUsers(authUsers);
+    finishLogin(email);
+    return;
+  }
+
+  if (savedUser?.passwordHash && passwordHash === savedUser.passwordHash) {
+    finishLogin(email);
+    return;
+  }
+
+  if ((!savedUser?.passwordHash || !savedUser?.passwordChangedAt) && passwordHash === profile.tempHash) {
+    showPasswordReset(email);
+    return;
+  }
+
+  loginError.textContent = "Incorrect email or password.";
+});
+
+passwordChangeForm?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  if (!passwordChangeStatus) return;
+
+  const email = localStorage.getItem(keys.currentUser);
+  const profile = email ? authorizedUsers[email] : null;
+  if (!profile) {
+    passwordChangeStatus.textContent = "No active Silverback HQ user is signed in.";
+    return;
+  }
+
+  const data = Object.fromEntries(new FormData(event.currentTarget));
+  const currentPassword = String(data.currentPassword || "");
+  const newPassword = String(data.newPassword || "");
+  const confirmPassword = String(data.confirmPassword || "");
+  const authUsers = getAuthUsers();
+  const savedUser = authUsers[email];
+  const activeHash = savedUser?.passwordHash || profile.tempHash;
+  const currentHash = await sha256(currentPassword);
+
+  if (currentHash !== activeHash) {
+    passwordChangeStatus.textContent = "Current password does not match this account.";
+    return;
+  }
+  if (!isStrongPassword(newPassword)) {
+    passwordChangeStatus.textContent = "New password must include uppercase, lowercase, number, and symbol.";
+    return;
+  }
+  if (newPassword !== confirmPassword) {
+    passwordChangeStatus.textContent = "New passwords do not match.";
+    return;
+  }
+
+  const newHash = await sha256(newPassword);
+  if (newHash === activeHash) {
+    passwordChangeStatus.textContent = "Choose a new password that is different from the current one.";
+    return;
+  }
+
+  authUsers[email] = {
+    passwordHash: newHash,
+    passwordChangedAt: new Date().toISOString()
+  };
+  setAuthUsers(authUsers);
+  passwordChangeStatus.textContent = "Password updated for your account.";
+  event.currentTarget.reset();
+  addAuditEvent(profile.name, "Updated own Silverback HQ password", "Security");
+  renderSecurity();
 });
 
 crmSectionLinks.forEach((link) => {
@@ -827,8 +957,8 @@ function securityScore() {
 
 function securityChecks() {
   return [
-    { name: "Protected Admin Session", status: "Active", detail: "CRM locks after inactivity. Azure Static Web Apps protects the live CRM route before the page loads." },
-    { name: "Azure Auth Path", status: "Configuration Required", detail: "Microsoft Entra ID owner accounts, MFA, and role assignments must be completed in Azure." },
+    { name: "Protected Admin Session", status: "Active", detail: "Silverback HQ requires an approved email login, forces temporary password changes, and locks after inactivity." },
+    { name: "Enterprise Auth Path", status: "Future Upgrade", detail: "Microsoft Entra ID, MFA, and role assignments remain planned for full enterprise identity governance." },
     { name: "Role-Based Access", status: "Prepared", detail: "Owner, advisor, client, and investor roles are mapped for backend enforcement." },
     { name: "Audit Trail", status: "Active", detail: "Client actions, invoice events, and security events are visible in HQ." },
     { name: "Data Export Backup", status: "Active", detail: "Full CRM export creates a portable JSON backup." },
@@ -868,7 +998,7 @@ function crmReadinessChecks() {
 
 function productionModules() {
   return [
-    { title: "Microsoft Entra ID Login", status: "Ready", owner: "Azure Identity", phase: "Security", detail: "Replace temporary access code with real Microsoft login, MFA, conditional access, and session control.", nextStep: "Create app registration and assign Owner, Advisor, Client, and Investor roles." },
+    { title: "Silverback HQ Email Login", status: "Live", owner: "Silverback HQ", phase: "Security", detail: "Approved email accounts can access HQ with temporary passwords that must be changed on first sign-in.", nextStep: "Move to Entra ID or backend authentication when Silverback is ready for enterprise identity." },
     { title: "Role-Based Access Control", status: "Ready", owner: "Silverback HQ", phase: "Security", detail: "Owner, advisor, client portal, and investor access levels are mapped across CRM and portal features.", nextStep: "Enforce route and data visibility through Azure roles or backend claims." },
     { title: "Azure Function Email Router", status: "Ready", owner: "Operations", phase: "Communication", detail: "Consultations, future investors, portal messages, and invoice events can trigger email notifications.", nextStep: "Connect SendGrid, Microsoft Graph, or Gmail SMTP with verified business sender." },
     { title: "Payment Provider Checkout", status: "Ready", owner: "Finance", phase: "Payments", detail: "Invoice payments can route to Stripe, Square, PayPal, Venmo, Apple Pay, and Google Pay without storing card data.", nextStep: "Create hosted checkout links and store provider transaction IDs only." },

@@ -22,15 +22,33 @@
           <strong>Silverback</strong>
           <small>Consulting LLC</small>
         </div>
-        <p>Secure Admin Access</p>
+        <p>Secure Team Access</p>
         <h1>Silverback HQ</h1>
         <label>
-          Local Preview Code
-          <input type="password" name="accessCode" placeholder="Enter local preview code" autocomplete="current-password" required>
+          Email
+          <input type="email" name="email" placeholder="you@example.com" autocomplete="username" required>
         </label>
-        <button type="submit">Enter CRM</button>
-        <span data-login-error></span>
-        <small>Live access is handled by Microsoft Entra ID and Azure Static Web Apps roles. This code is only for local preview.</small>
+        <label>
+          Password
+          <input type="password" name="password" placeholder="Enter your password" autocomplete="current-password" required>
+        </label>
+        <div class="password-reset-panel" data-password-reset hidden>
+          <p>Password Update Required</p>
+          <label>
+            New Password
+            <input type="password" name="newPassword" placeholder="Create a new password" autocomplete="new-password" minlength="8">
+          </label>
+          <label>
+            Confirm New Password
+            <input type="password" name="confirmPassword" placeholder="Confirm new password" autocomplete="new-password" minlength="8">
+          </label>
+          <small>Your temporary password must be changed before Silverback HQ opens.</small>
+        </div>
+        <button type="submit" data-login-button>Enter CRM</button>
+        <span data-login-error aria-live="polite"></span>
+        <small>
+          Authorized Silverback leadership and technology partners only. First-time users must replace their temporary password.
+        </small>
       </form>
     </section>
 
@@ -407,6 +425,26 @@
               <p>Intake status, scheduled calls, approved documents, and public-facing communication only.</p>
             </article>
           </div>
+          <form class="password-change-form" data-password-change-form>
+            <div>
+              <h3>Change Your Password</h3>
+              <p>Update the password for the currently signed-in Silverback HQ account.</p>
+            </div>
+            <label>
+              Current Password
+              <input type="password" name="currentPassword" autocomplete="current-password" required>
+            </label>
+            <label>
+              New Password
+              <input type="password" name="newPassword" autocomplete="new-password" minlength="8" required>
+            </label>
+            <label>
+              Confirm New Password
+              <input type="password" name="confirmPassword" autocomplete="new-password" minlength="8" required>
+            </label>
+            <button type="submit">Update Password</button>
+            <span data-password-change-status aria-live="polite"></span>
+          </form>
           <div class="audit-strip">
             <h3>Security Audit Trail</h3>
             <div data-security-audit></div>
